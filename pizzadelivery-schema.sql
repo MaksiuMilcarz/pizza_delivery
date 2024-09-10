@@ -1,5 +1,3 @@
--- Create the pizza ordering database
-CREATE DATABASE PizzaOrderingSystem;
 USE PizzaOrderingSystem;
 
 -- Table for storing different pizzas

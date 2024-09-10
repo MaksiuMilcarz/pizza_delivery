@@ -1,0 +1,2 @@
+password = 'IlikeKatyPerry'
+username = 'root'
