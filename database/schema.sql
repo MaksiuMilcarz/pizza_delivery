@@ -9,7 +9,7 @@ CREATE TABLE Pizza (
 );
 CREATE TABLE Ingredient (
     id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each ingredient
-    name VARCHAR(255) NOT NULL,        -- Name of the ingredient (e.g., Cheese, Tomato)
+    name VARCHAR(50) NOT NULL,        -- Name of the ingredient (e.g., Cheese, Tomato)
     base_price DECIMAL(10, 2) NOT NULL, -- Price of the ingredient
     is_vegan BOOLEAN DEFAULT FALSE,    -- Is the ingredient vegan?
     is_vegetarian BOOLEAN DEFAULT FALSE -- Is the ingredient vegetarian?
@@ -23,35 +23,23 @@ CREATE TABLE Pizza_Ingredients (
 );
 CREATE TABLE Drink (
     id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each drink
-    name VARCHAR(255) NOT NULL,         -- Name of the drink (e.g., Coke, Water)
+    name VARCHAR(50) NOT NULL,         -- Name of the drink (e.g., Coke, Water)
     base_price DECIMAL(10, 2) NOT NULL  -- Price of the drink
 );
 CREATE TABLE Dessert (
     id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each dessert
-    name VARCHAR(255) NOT NULL,         -- Name of the dessert (e.g., Ice Cream, Cake)
+    name VARCHAR(50) NOT NULL,         -- Name of the dessert (e.g., Ice Cream, Cake)
     base_price DECIMAL(10, 2) NOT NULL  -- Price of the dessert
 );
 CREATE TABLE Customer (
     id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each customer
-    name VARCHAR(255) NOT NULL,         -- Customer's name
+    name VARCHAR(50) NOT NULL,         -- Customer's name
     gender ENUM('Male', 'Female', 'Other') NOT NULL, -- Gender of the customer
     birthdate DATE NOT NULL,            -- Birthdate of the customer
     phone VARCHAR(20) NOT NULL,         -- Phone number
     address TEXT NOT NULL,              -- Address for delivery
-    email VARCHAR(255) UNIQUE NOT NULL, -- Email for login
-    password VARCHAR(255) NOT NULL,     -- Password for login (hashed)
-    total_pizzas_ordered INT DEFAULT 0, -- Number of pizzas ordered by the customer
-    birthday_pizza_claimed BOOLEAN DEFAULT FALSE -- True if birthday pizza offer has been claimed
-);
-CREATE TABLE Customer (
-    id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each customer
-    name VARCHAR(255) NOT NULL,         -- Customer's name
-    gender ENUM('Male', 'Female', 'Other') NOT NULL, -- Gender of the customer
-    birthdate DATE NOT NULL,            -- Birthdate of the customer
-    phone VARCHAR(20) NOT NULL,         -- Phone number
-    address TEXT NOT NULL,              -- Address for delivery
-    email VARCHAR(255) UNIQUE NOT NULL, -- Email for login
-    password VARCHAR(255) NOT NULL,     -- Password for login (hashed)
+    email VARCHAR(100) UNIQUE NOT NULL, -- Email for login
+    password VARCHAR(100) NOT NULL,     -- Password for login (hashed)
     total_pizzas_ordered INT DEFAULT 0, -- Number of pizzas ordered by the customer
     birthday_pizza_claimed BOOLEAN DEFAULT FALSE -- True if birthday pizza offer has been claimed
 );
@@ -100,3 +88,47 @@ CREATE TABLE Order_Confirmation (
     estimated_delivery_time TIMESTAMP, -- The estimated delivery time for the order
     FOREIGN KEY (order_id) REFERENCES `Order`(id)
 );
+CREATE TABLE Delivery_Personnel (
+    id INT PRIMARY KEY AUTO_INCREMENT,           -- Unique identifier for each delivery person
+    name VARCHAR(255) NOT NULL,                   -- Name of the delivery person
+    phone VARCHAR(20) NOT NULL,                   -- Phone number for contact
+    postal_code VARCHAR(20) NOT NULL,             -- Assigned postal code area
+    is_available BOOLEAN DEFAULT TRUE             -- True if available for delivery, false if currently delivering
+);
+CREATE TABLE Delivery (
+    id INT PRIMARY KEY AUTO_INCREMENT,          -- Unique delivery identifier
+    order_id INT,                                -- Foreign Key referencing Order table
+    delivery_personnel_id INT,                   -- Foreign Key referencing Delivery_Personnel table
+    status ENUM('Being Prepared', 'In Process', 'Out for Delivery', 'Delivered', 'Cancelled') DEFAULT 'Being Prepared', -- Status of the order delivery
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Time when the delivery was assigned
+    estimated_delivery_time TIMESTAMP,           -- Estimated delivery time
+    delivery_time TIMESTAMP,                     -- Actual delivery completion time
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
+    FOREIGN KEY (delivery_personnel_id) REFERENCES Delivery_Personnel(id)
+);
+CREATE TABLE Order_Cancellation (
+    order_id INT PRIMARY KEY,                    -- Foreign Key referencing Order table
+    cancellation_time TIMESTAMP,                 -- The time when the order was cancelled
+    FOREIGN KEY (order_id) REFERENCES `Order`(id)
+);
+CREATE TABLE Delivery_Grouping (
+    group_id INT PRIMARY KEY AUTO_INCREMENT,     -- Unique identifier for a group of deliveries
+    delivery_personnel_id INT,                   -- Foreign Key referencing Delivery_Personnel table
+    postal_code VARCHAR(20),                     -- Postal code for which the orders are grouped
+    group_start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- The time when the first order in the group was placed
+    FOREIGN KEY (delivery_personnel_id) REFERENCES Delivery_Personnel(id)
+);
+CREATE TABLE Grouped_Orders (
+    group_id INT,                                -- Foreign Key referencing Delivery_Grouping table
+    order_id INT,                                -- Foreign Key referencing Order table
+    PRIMARY KEY (group_id, order_id),
+    FOREIGN KEY (group_id) REFERENCES Delivery_Grouping(group_id),
+    FOREIGN KEY (order_id) REFERENCES `Order`(id)
+);
+CREATE TABLE Customer_Order_Status (
+    order_id INT PRIMARY KEY,                   -- Foreign Key referencing Order table
+    status_text VARCHAR(255),                   -- Description of the current status (e.g., "Your order is being prepared")
+    estimated_delivery_time TIMESTAMP,          -- Estimated delivery time displayed to the customer
+    FOREIGN KEY (order_id) REFERENCES `Order`(id)
+);
+
