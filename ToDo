@@ -69,6 +69,13 @@ ERD Design:
 - discount_codes_used - customer_id, code, is_used
 - order_confirmation - order_id, confirmation_text, estimated_delivery_time
 
+- delivery_personnel - id, name, phone, postal_code, is_available
+- delivery - id, order_id, delivery_personnel_id, status, assigned_at, estimated_delivery_time, delivery_time
+- order_cancelation - order_id, cancelation_time
+- delivery_grouping - delivery_id, order_id, postal_code, grouping_start_time
+- grouped_orders - delivery_grouping_id, order_id
+- customer_order_status - order_id, status, estimated_delivery_time
+
 
 DATABASE Schema:
 - translate the ERD into a database schema
