@@ -43,6 +43,19 @@ CREATE TABLE Customer (
     total_pizzas_ordered INT DEFAULT 0, -- Number of pizzas ordered by the customer
     birthday_pizza_claimed BOOLEAN DEFAULT FALSE -- True if birthday pizza offer has been claimed
 );
+CREATE TABLE `Order` (
+    id INT PRIMARY KEY AUTO_INCREMENT, -- Unique identifier for each order
+    customer_id INT,                    -- Foreign Key referencing Customer table
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp of when the order was placed
+    delivery_time TIMESTAMP,            -- Estimated delivery time
+    discount_applied BOOLEAN DEFAULT FALSE, -- If a 10% discount was applied
+    birthday_offer_applied BOOLEAN DEFAULT FALSE, -- If a birthday offer was applied
+    discount_code_used BOOLEAN DEFAULT FALSE, -- If a discount code was used
+    total_price DECIMAL(10, 2) NOT NULL, -- Final price of the order
+    status ENUM('Pending', 'Dispatched', 'Delivered') NOT NULL DEFAULT 'Pending', -- Status of the order
+    FOREIGN KEY (customer_id) REFERENCES Customer(id)
+);
+
 CREATE TABLE Order_Pizzas (
     order_id INT,                      -- Foreign Key referencing Order table
     pizza_id INT,                      -- Foreign Key referencing Pizza table
@@ -90,7 +103,7 @@ CREATE TABLE Order_Confirmation (
 );
 CREATE TABLE Delivery_Personnel (
     id INT PRIMARY KEY AUTO_INCREMENT,           -- Unique identifier for each delivery person
-    name VARCHAR(255) NOT NULL,                   -- Name of the delivery person
+    name VARCHAR(50) NOT NULL,                   -- Name of the delivery person
     phone VARCHAR(20) NOT NULL,                   -- Phone number for contact
     postal_code VARCHAR(20) NOT NULL,             -- Assigned postal code area
     is_available BOOLEAN DEFAULT TRUE             -- True if available for delivery, false if currently delivering
