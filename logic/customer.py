@@ -4,7 +4,7 @@ from models import Customer, GenderEnum
 from utils.security import hash_password, verify_password
 from datetime import datetime
 
-def register_customer(session, name, gender, birthdate, phone, address, email, password):
+def register_customer(session, name, gender, birthdate, phone, address,postal_code, email, password):
     """
     Registers a new customer.
     """
@@ -15,6 +15,7 @@ def register_customer(session, name, gender, birthdate, phone, address, email, p
         birthdate=birthdate,
         phone=phone,
         address=address,
+        postal_code=postal_code,
         email=email,
         password=hashed_pwd
     )

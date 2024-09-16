@@ -1,3 +1,7 @@
+"""
+file containing all SQLAchemy ORM models representing our schema
+"""
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -108,6 +112,7 @@ class Customer(Base):
     birthdate = Column(Date, nullable=False)
     phone = Column(String(12), nullable=False)
     address = Column(Text, nullable=False)
+    postal_code = Column(Integer, nullable=False)
     email = Column(String(50), unique=True, nullable=False)
     password = Column(String(100), nullable=False)  # Increased length for hashed passwords
     total_pizzas_ordered = Column(Integer, default=0)

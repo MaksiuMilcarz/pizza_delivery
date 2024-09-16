@@ -1,6 +1,10 @@
+"""
+The main entry point for the application.
+"""
 # app.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from models import Base, GenderEnum
 from models import GenderEnum
 import config
 from logic.customer import register_customer, login_customer, update_customer_info
@@ -26,7 +30,7 @@ session = Session()
 # 1. Register a new customer
 new_customer = register_customer(
     session,
-    name='Jane Smith',
+    name='Rosa Melano',
     gender=GenderEnum.Female,
     birthdate=datetime.strptime('1990-08-25', '%Y-%m-%d').date(),
     phone='555-6789',
