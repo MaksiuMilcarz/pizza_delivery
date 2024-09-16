@@ -49,6 +49,7 @@ CREATE TABLE Customer (
     birthdate DATE NOT NULL,
     phone VARCHAR(12) NOT NULL,
     address TEXT NOT NULL,
+    postal_code INT NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(20) NOT NULL,
     total_pizzas_ordered INT DEFAULT 0,
