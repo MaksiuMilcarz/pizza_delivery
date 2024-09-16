@@ -1,3 +1,7 @@
+"""
+file containing all SQLAchemy ORM models representing our schema
+"""
+
 from sqlalchemy import (
     Column,
     Integer,
