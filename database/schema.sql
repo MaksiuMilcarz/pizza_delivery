@@ -1,4 +1,8 @@
+-- drop all tables from the database
+DROP DATABASE PizzaOrderingSystem;
+CREATE DATABASE PizzaOrderingSystem;
 USE PizzaOrderingSystem;
+
 
 -- Stores information about available pizzas, including their price and dietary restrictions.
 CREATE TABLE Pizza (
