@@ -1,0 +1,2 @@
+password = 'passward'
+username = 'root'

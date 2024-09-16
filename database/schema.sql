@@ -76,7 +76,7 @@ CREATE TABLE Order_Pizzas (
     quantity INT DEFAULT 1,
     price DECIMAL(10, 2),
     PRIMARY KEY (order_id, pizza_id),
-    FOREIGN KEY (order_id) REFERENCES PizzaOrder(id),
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
     FOREIGN KEY (pizza_id) REFERENCES Pizza(id)
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE Order_Drinks (
     quantity INT DEFAULT 1,
     price DECIMAL(10, 2),
     PRIMARY KEY (order_id, drink_id),
-    FOREIGN KEY (order_id) REFERENCES PizzaOrder(id),
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
     FOREIGN KEY (drink_id) REFERENCES Drink(id)
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE Order_Desserts (
     quantity INT DEFAULT 1,
     price DECIMAL(10, 2),
     PRIMARY KEY (order_id, dessert_id),
-    FOREIGN KEY (order_id) REFERENCES PizzaOrder(id),
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
     FOREIGN KEY (dessert_id) REFERENCES Dessert(id)
 );
 
@@ -170,7 +170,7 @@ CREATE TABLE Grouped_Orders (
     order_id INT,
     PRIMARY KEY (group_id, order_id),
     FOREIGN KEY (group_id) REFERENCES Delivery_Grouping(group_id),
-    FOREIGN KEY (order_id) REFERENCES PizzaOrder(id)
+    FOREIGN KEY (order_id) REFERENCES `Order`(id)
 );
 
 -- Provides a status update for customers, showing the current state of their order.
