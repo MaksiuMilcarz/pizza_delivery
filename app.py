@@ -1,7 +1,7 @@
 # app.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
+from models import GenderEnum
 import config
 from logic.customer import register_customer, login_customer, update_customer_info
 from logic.order import create_order
@@ -30,9 +30,9 @@ new_customer = register_customer(
     gender=GenderEnum.Female,
     birthdate=datetime.strptime('1990-08-25', '%Y-%m-%d').date(),
     phone='555-6789',
-    address='789 Maple Ave, Springfield, 12345',
+    address='Sorbonnelaan 6229HD, Maastricht',
     email='jane.smith@example.com',
-    password='anothersecurepassword'
+    password='passward123'
 )
 
 # 2. Login as the new customer
