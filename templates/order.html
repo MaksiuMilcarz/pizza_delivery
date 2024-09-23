@@ -1,0 +1,112 @@
+<!-- templates/order.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Place an Order</h2>
+
+    <!-- Display form-level errors -->
+    {% if form.items.errors %}
+        <div class="alert alert-danger">
+            {% for error in form.items.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('order') }}">
+        {{ form.hidden_tag() }}
+        <table id="order-items-table" class="table">
+            <thead>
+                <tr>
+                    <th>Menu Item</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item_form in form.items %}
+                    <tr id="order-item-{{ loop.index0 }}">
+                        <td>
+                            {{ item_form.menu_item_id.label }}
+                            {{ item_form.menu_item_id(class="form-control") }}
+                            {% for error in item_form.menu_item_id.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{ item_form.quantity.label }}
+                            {{ item_form.quantity(class="form-control") }}
+                            {% for error in item_form.quantity.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if loop.index0 > 0 %}
+                                <!-- Allow removal of additional items -->
+                                <button type="button" class="btn btn-danger remove-item-button">Remove</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-secondary" id="add-item-button">Add Next Item</button>
+        <br><br>
+
+        <!-- Discount Code Field -->
+        <div class="form-group">
+            {{ form.discount_code.label }}
+            {{ form.discount_code(class="form-control") }}
+            {% for error in form.discount_code.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <br>
+
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    </form>
+
+    <!-- Include jQuery (or you can use vanilla JS) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    // JavaScript/jQuery code to handle adding/removing items
+    $(document).ready(function() {
+        var itemIndex = {{ form.items|length }};
+        var maxItems = 10; // Set a reasonable maximum
+
+        $('#add-item-button').click(function() {
+            if (itemIndex >= maxItems) {
+                alert('You have reached the maximum number of items.');
+                return;
+            }
+
+            var newItem = $('#order-items-table tbody tr:first').clone();
+            newItem.attr('id', 'order-item-' + itemIndex);
+            newItem.find('select, input').each(function() {
+                var name = $(this).attr('name');
+                var newName = name.replace(/\d+/, itemIndex);
+                $(this).attr('name', newName);
+                $(this).attr('id', 'items-' + itemIndex + '-' + $(this).attr('name').split('-').pop());
+                if ($(this).is('input')) {
+                    $(this).val('');
+                }
+            });
+            newItem.find('.remove-item-button').show();
+            $('#order-items-table tbody').append(newItem);
+            itemIndex++;
+        });
+
+        // Initially hide remove buttons for the first item
+        $('.remove-item-button').each(function(index) {
+            if (index === 0) {
+                $(this).hide();
+            }
+        });
+
+        // Handle remove item button click
+        $(document).on('click', '.remove-item-button', function() {
+            $(this).closest('tr').remove();
+        });
+    });
+    </script>
+{% endblock %}

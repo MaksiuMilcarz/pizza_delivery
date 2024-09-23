@@ -1,2 +1,0 @@
-password = 'IlikeKatyPerry'
-username = 'root'

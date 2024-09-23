@@ -1,2 +1,0 @@
-password = 'passward'
-username = 'root'
