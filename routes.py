@@ -203,13 +203,16 @@ def register_routes(app):
         try:
             complete_delivery(delivery_id)
             flash('Delivery marked as completed.', 'success')
-            return redirect(url_for('order_status_page', order_id=Delivery.query.get(delivery_id).order_id))
+            delivery = Delivery.query.get(delivery_id)
+            return redirect(url_for('thank_you', order_id=delivery.order_id))
         except ValueError as ve:
             flash(str(ve), 'danger')
-            return redirect(url_for('order_status_page', order_id=Delivery.query.get(delivery_id).order_id))
+            delivery = Delivery.query.get(delivery_id)
+            return redirect(url_for('order_status_page', order_id=delivery.order_id))
         except Exception as e:
             flash('An unexpected error occurred.', 'danger')
-            return redirect(url_for('order_status_page', order_id=Delivery.query.get(delivery_id).order_id))
+            delivery = Delivery.query.get(delivery_id)
+            return redirect(url_for('order_status_page', order_id=delivery.order_id))
         
     
     
