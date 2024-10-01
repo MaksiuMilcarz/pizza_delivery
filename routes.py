@@ -82,63 +82,23 @@ def register_routes(app):
     @login_required
     def order():
         from setup.extensions import db
-        menu_items = MenuItem.query.all()
-        menu_item_choices = [
-            (item.id, f"{item.name} (${calculate_final_price(item.base_price)})")
-            for item in menu_items
-        ]
 
-        if request.method == 'GET':
-            form = OrderForm()
-            # Initialize the first item with choices
-            if len(form.items) == 0:
-                form.items.append_entry()
-            for item_form in form.items:
-                item_form.menu_item_id.choices = menu_item_choices
+        discount_percentage = 0  # Default discount
+
+        # Retrieve selected item IDs from query parameters
+        selected_item_ids = request.args.getlist('item_ids')
+        if selected_item_ids:
+            # Convert IDs to integers
+            selected_item_ids = [int(id) for id in selected_item_ids]
+
+            # Query the database for selected items
+            selected_items = MenuItem.query.filter(MenuItem.id.in_(selected_item_ids)).all()
         else:
-            form = OrderForm()
-            form.process(request.form)
-            # Set choices for each OrderItemForm
-            for item_form in form.items:
-                item_form.menu_item_id.choices = menu_item_choices
+            selected_items = []
 
-        if form.validate_on_submit():
-            # Process form submission
-            discount_code_str = form.discount_code.data.strip()
-            if discount_code_str:
-                discount_code = DiscountCode.query.filter_by(code=discount_code_str).first()
-                if not discount_code:
-                    form.discount_code.errors.append('Invalid discount code.')
-                    return render_template('order.html', form=form)
-                else:
-                    # Check if the user has already used this code
-                    usage = DiscountCodeUsage.query.filter_by(
-                        customer_id=current_user.id,
-                        code=discount_code.code
-                    ).first()
-                    if usage and usage.is_used:
-                        form.discount_code.errors.append('You have already used this discount code.')
-                        return render_template('order.html', form=form)
-                    else:
-                        discount_percentage = Decimal(str(discount_code.discount_percentage))
-
-            # Create the order
-            try:
-                new_order = create_order(
-                    customer=current_user,
-                    items=[{'menu_item_id': item.id, 'quantity': 1} for item in selected_items],
-                    discount_percentage=discount_percentage,
-                    discount_code=discount_code
-                )
-                db.session.commit()
-                flash('Your order has been placed successfully!', 'success')
-                return redirect(url_for('order_status_page', order_id=new_order.id))
-            except Exception as e:
-                db.session.rollback()
-                flash(f'An error occurred while placing your order: {str(e)}', 'danger')
-        else:
-            # Initial rendering or form validation failed
-            pass
+        # Proceed with your existing logic
+        form = OrderForm()
+        
 
         return render_template('order.html', selected_items=selected_items, form=form, discount_percentage=discount_percentage)
 

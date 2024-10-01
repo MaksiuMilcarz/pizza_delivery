@@ -32,30 +32,7 @@
                         <div class="text-danger mt-1">{{ error }}</div>
                     {% endfor %}
                 </div>
-
-                <!-- Credit Card Information -->
-                <h4>Payment Information:</h4>
-                <div class="mb-3">
-                    {{ form.card_number.label(class="form-label") }}
-                    {{ form.card_number(class="form-control") }}
-                    {% for error in form.card_number.errors %}
-                        <div class="text-danger mt-1">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="mb-3">
-                    {{ form.card_expiry.label(class="form-label") }}
-                    {{ form.card_expiry(class="form-control") }}
-                    {% for error in form.card_expiry.errors %}
-                        <div class="text-danger mt-1">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="mb-3">
-                    {{ form.card_cvv.label(class="form-label") }}
-                    {{ form.card_cvv(class="form-control") }}
-                    {% for error in form.card_cvv.errors %}
-                        <div class="text-danger mt-1">{{ error }}</div>
-                    {% endfor %}
-                </div>
+            
             </div>
             <div class="col-md-4">
                 <h4>Order Summary:</h4>
