@@ -1,5 +1,5 @@
-from decimal import Decimal
-from flask import render_template, redirect, url_for, flash, request
+from decimal import ROUND_HALF_UP, Decimal
+from flask import render_template, redirect, session, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from functionality.customer import create_customer
@@ -11,6 +11,8 @@ from models import Customer, Delivery, DiscountCode, DiscountCodeUsage, MenuItem
 from forms import RegistrationForm, LoginForm, OrderForm, OrderItemForm
 from datetime import datetime
 from flask import jsonify
+from flask import request, session
+from decimal import Decimal
 
 def register_routes(app):
     @app.route('/')
@@ -78,46 +80,47 @@ def register_routes(app):
         return render_template('menu.html', pizzas=pizzas, drinks=drinks, desserts=desserts)
     
 
+    
+
     @app.route('/order', methods=['GET', 'POST'])
     @login_required
     def order():
         from setup.extensions import db
 
-        discount_percentage = 0  # Default discount
+        discount_percentage = Decimal('0.00')  # Default discount
+        discount_code = None  # Initialize discount_code variable
 
-        # Retrieve selected item IDs from query parameters
-        selected_item_ids = request.args.getlist('item_ids')
-        if selected_item_ids:
-            # Convert IDs to integers
-            selected_item_ids = [int(id) for id in selected_item_ids]
+        # Initialize selected_items
+        selected_items = []
 
-            # Query the database for selected items
-            selected_items = MenuItem.query.filter(MenuItem.id.in_(selected_item_ids)).all()
+        # Retrieve selected item IDs from query parameters on GET request
+        if request.method == 'GET':
+            selected_item_ids = request.args.getlist('item_ids')
+            if selected_item_ids:
+                # Convert IDs to integers
+                selected_item_ids = [int(id) for id in selected_item_ids]
+
+                # Query the database for selected items
+                selected_items = MenuItem.query.filter(MenuItem.id.in_(selected_item_ids)).all()
+            else:
+                selected_items = []
+
+            # Store selected_item_ids in session to preserve them between requests
+            session['selected_item_ids'] = selected_item_ids
+
+        # On POST request, retrieve selected items from session
         else:
-            selected_items = []
+            selected_item_ids = session.get('selected_item_ids', [])
+            if selected_item_ids:
+                selected_items = MenuItem.query.filter(MenuItem.id.in_(selected_item_ids)).all()
+            else:
+                selected_items = []
+
+        # Calculate subtotal
+        subtotal = sum(item.base_price for item in selected_items)
 
         # Proceed with your existing logic
         form = OrderForm()
-        
-        menu_items = MenuItem.query.all()
-        menu_item_choices = [
-            (item.id, f"{item.name} (${calculate_final_price(item.base_price)})")
-            for item in menu_items
-        ]
-
-        if request.method == 'GET':
-            form = OrderForm()
-            # Initialize the first item with choices
-            if len(form.items) == 0:
-                form.items.append_entry()
-            for item_form in form.items:
-                item_form.menu_item_id.choices = menu_item_choices
-        else:
-            form = OrderForm()
-            form.process(request.form)
-            # Set choices for each OrderItemForm
-            for item_form in form.items:
-                item_form.menu_item_id.choices = menu_item_choices
 
         if form.validate_on_submit():
             # Process form submission
@@ -126,7 +129,7 @@ def register_routes(app):
                 discount_code = DiscountCode.query.filter_by(code=discount_code_str).first()
                 if not discount_code:
                     form.discount_code.errors.append('Invalid discount code.')
-                    return render_template('order.html', form=form)
+                    return render_template('order.html', selected_items=selected_items, form=form, subtotal=subtotal, discount_percentage=discount_percentage)
                 else:
                     # Check if the user has already used this code
                     usage = DiscountCodeUsage.query.filter_by(
@@ -135,7 +138,7 @@ def register_routes(app):
                     ).first()
                     if usage and usage.is_used:
                         form.discount_code.errors.append('You have already used this discount code.')
-                        return render_template('order.html', form=form)
+                        return render_template('order.html', selected_items=selected_items, form=form, subtotal=subtotal, discount_percentage=discount_percentage)
                     else:
                         discount_percentage = Decimal(str(discount_code.discount_percentage))
 
@@ -149,15 +152,30 @@ def register_routes(app):
                 )
                 db.session.commit()
                 flash('Your order has been placed successfully!', 'success')
+                # Clear selected items from session
+                session.pop('selected_item_ids', None)
                 return redirect(url_for('order_status_page', order_id=new_order.id))
             except Exception as e:
                 db.session.rollback()
                 flash(f'An error occurred while placing your order: {str(e)}', 'danger')
         else:
-            # Initial rendering or form validation failed
+            # Handle form validation errors or initial GET request
             pass
 
-        return render_template('order.html', selected_items=selected_items, form=form, discount_percentage=discount_percentage)
+        # Calculate discount amount and total after discount
+        discount_amount = (subtotal * (discount_percentage / Decimal('100'))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        total_after_discount = (subtotal - discount_amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+        return render_template(
+            'order.html',
+            selected_items=selected_items,
+            form=form,
+            subtotal=subtotal,
+            discount_amount=discount_amount,
+            total_after_discount=total_after_discount,
+            discount_percentage=discount_percentage
+        )
+
 
 
     @app.route('/order_status/<int:order_id>/status')

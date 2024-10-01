@@ -251,7 +251,7 @@
                 // Redirect with query parameters
                 const queryParams = new URLSearchParams();
                 orderData.forEach(item => {
-                    queryParams.append('items', item.id);
+                    queryParams.append('item_ids', item.id);
                     queryParams.append('quantities', item.quantity);
                 });
                 window.location.href = "{{ url_for('order') }}" + "?" + queryParams.toString();
@@ -283,11 +283,12 @@
         // Redirect with query parameters
         const queryParams = new URLSearchParams();
         orderData.forEach(item => {
-            queryParams.append('items', item.id);
+            queryParams.append('item_ids', item.id);
             // You might want to include quantities as well
             queryParams.append('quantities', item.quantity);
         });
         window.location.href = "{{ url_for('order') }}" + "?" + queryParams.toString();
+
     });
 
 
