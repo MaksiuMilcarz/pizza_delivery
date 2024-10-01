@@ -8,3 +8,4 @@ __pycache__/
 
 # instance pizza_deliver.db
 instance/
+*.db

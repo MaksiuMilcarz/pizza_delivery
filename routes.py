@@ -66,48 +66,13 @@ def register_routes(app):
     @app.route('/menu', methods=['GET'])
     @login_required
     def menu():
-        # Manually define the menu items
-        pizzas = [
-            {"id": 1, "name": "Margherita", "base_price": 5.00, "image": "margherita.jpeg", 
-             "description": "Classic delight with 100% real mozzarella cheese", "is_vegetarian": True, "is_vegan": False},
-            {"id": 2, "name": "Pepperoni", "base_price": 6.50, "image": "pepperoni.jpeg", 
-             "description": "Loaded with pepperoni and cheese", "is_vegetarian": False, "is_vegan": False},
-            {"id": 3, "name": "Vegan Delight", "base_price": 7.00, "image": "vegan_delight.jpeg", 
-             "description": "A healthy choice with fresh vegetables", "is_vegetarian": True, "is_vegan": True},
-            {"id": 4, "name": "Hawaiian", "base_price": 6.00, "image": "hawaiian.jpeg", 
-             "description": "Ham, pineapple, and mozzarella cheese", "is_vegetarian": False, "is_vegan": False},
-            {"id": 5, "name": "Mushroom", "base_price": 5.50, "image": "mushroom.jpeg", 
-             "description": "Loaded with mushrooms and mozzarella cheese", "is_vegetarian": True, "is_vegan": False},
-            {"id": 6, "name": "BBQ Chicken", "base_price": 7.50, "image": "bbq_chicken.jpeg", 
-             "description": "BBQ sauce, chicken, and onions", "is_vegetarian": False, "is_vegan": False},
-            {"id": 7, "name": "Spinach & Feta", "base_price": 6.00, "image": "spinach_feta.jpeg", 
-             "description": "Spinach, feta cheese, and mozzarella", "is_vegetarian": True, "is_vegan": False},
-            {"id": 8, "name": "Four Cheese", "base_price": 6.50, "image": "four_cheese.jpeg", 
-             "description": "A blend of four cheeses", "is_vegetarian": True, "is_vegan": False},
-            {"id": 9, "name": "Supreme", "base_price": 8.00, "image": "supreme.jpeg", 
-             "description": "Pepperoni, mushrooms, bell peppers, and onions", "is_vegetarian": False, "is_vegan": False},
-            {"id": 10, "name": "Mediterranean", "base_price": 7.00, "image": "mediterranean.png", 
-             "description": "Olives, feta, and bell peppers", "is_vegetarian": True, "is_vegan": False}
-        ]
+        # Retrieve all menu items
+        menu_items = MenuItem.query.all()
 
-        drinks = [
-            {"id": 11, "name": "Coca Cola", "base_price": 1.50, "image": "coca_cola.jpeg", 
-             "description": "Refreshing Coca Cola"},
-            {"id": 12, "name": "Sprite", "base_price": 1.50, "image": "sprite.jpeg", 
-             "description": "Lemon-lime flavored soda"},
-            {"id": 13, "name": "Water", "base_price": 1.00, "image": "water.jpeg", 
-             "description": "Pure and clean bottled water"},
-            {"id": 14, "name": "Orange Juice", "base_price": 2.00, "image": "orange_juice.jpeg", 
-             "description": "Freshly squeezed orange juice"}
-        ]
-
-        desserts = [
-            {"id": 15, "name": "Tiramisu", "base_price": 3.50, "image": "tiramisu.jpeg", 
-             "description": "Classic Italian dessert with mascarpone"},
-            {"id": 16, "name": "Gelato", "base_price": 2.50, "image": "gelato.jpeg", 
-             "description": "Creamy Italian ice cream"}
-        ]
-
+        # Optionally, categorize them
+        pizzas = [item for item in menu_items if item.category == MenuItemCategoryEnum.PIZZA]
+        drinks = [item for item in menu_items if item.category == MenuItemCategoryEnum.DRINK]
+        desserts = [item for item in menu_items if item.category == MenuItemCategoryEnum.DESSERT]
 
         # Render the template with the manually defined menu items
         return render_template('menu.html', pizzas=pizzas, drinks=drinks, desserts=desserts)
