@@ -143,7 +143,6 @@ def register_routes(app):
         return render_template('order.html', selected_items=selected_items, form=form, discount_percentage=discount_percentage)
 
 
-
     @app.route('/order_status/<int:order_id>/status')
     @login_required
     def get_order_status(order_id):
