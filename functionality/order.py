@@ -114,7 +114,7 @@ def create_order(customer, items, discount_percentage=Decimal('0.00'), discount_
         func=transition_to_being_delivered,
         args=[new_order.id],
         trigger='date',
-        run_date=datetime.now() + timedelta(minutes=10)
+        run_date=datetime.now() + timedelta(minutes=5)
     )
     
     time_to_deliver = calculate_estimated_delivery_interval(new_order, new_delivery)
@@ -127,3 +127,65 @@ def create_order(customer, items, discount_percentage=Decimal('0.00'), discount_
     )
 
     return new_order
+
+
+def cancel_order(order_id, customer_id):
+    order = Order.query.get(order_id)
+    if not order:
+        raise ValueError("Order not found.")
+
+    # Ensure the order belongs to the current user
+    if order.customer_id != customer_id:
+        raise ValueError("You do not have permission to cancel this order.")
+
+    # Only allow cancellation if the order is not already delivered or cancelled
+    if order.status in [OrderStatusEnum.Delivered, OrderStatusEnum.Cancelled]:
+        raise ValueError("Order cannot be cancelled.")
+
+    # Update order status to Cancelled
+    order.status = OrderStatusEnum.Cancelled
+
+    # Calculate total pizzas in the order
+    total_pizzas = sum(
+        item.quantity for item in order.order_items 
+        if item.menu_item.category == MenuItemCategoryEnum.Pizza
+    )
+    customer = order.customer  # Correctly access the customer from the order instance
+    customer.total_pizzas_ordered -= total_pizzas
+    if customer.total_pizzas_ordered < 0:
+        customer.total_pizzas_ordered = 0  # Prevent negative values
+
+    # Handle delivery personnel
+    if order.delivery and order.delivery.delivery_personnel:
+        delivery = order.delivery
+        delivery_personnel = delivery.delivery_personnel
+
+        # Free up the delivery personnel if they have no other active deliveries
+        active_deliveries = Delivery.query.filter(
+            Delivery.delivery_personnel_id == delivery_personnel.id,
+            Delivery.status.in_([OrderStatusEnum.Being_Prepared, OrderStatusEnum.Being_Delivered])
+        ).count()
+
+        if active_deliveries <= 1:
+            delivery_personnel.is_available = True
+            delivery_personnel.postal_code = None  # Unassign postal code if necessary
+            delivery_personnel.last_delivery_time = datetime.now()
+
+        # Remove the delivery assignment
+        db.session.delete(delivery)
+        
+    from app import scheduler
+    
+    # Remove scheduled jobs related to this order
+    job_ids = [
+        f"transition_to_being_prepared_order_{order.id}",
+        f"transition_to_being_delivered_order_{order.id}",
+        f"transition_to_delivered_order_{order.id}"
+    ]
+    for job_id in job_ids:
+        job = scheduler.get_job(job_id)
+        if job:
+            scheduler.remove_job(job_id)
+
+    # Commit all changes to the database
+    db.session.commit()

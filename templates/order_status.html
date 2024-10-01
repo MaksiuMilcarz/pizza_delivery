@@ -11,19 +11,7 @@
                 <p><strong>Order ID:</strong> {{ order.id }}</p>
                 <p>
                     <strong>Status:</strong>
-                    <span id="order-status" class="badge 
-                        {% if order.status.value == 'Pending' %}
-                            bg-secondary
-                        {% elif order.status.value == 'Being Prepared' %}
-                            bg-warning
-                        {% elif order.status.value == 'Being Delivered' %}
-                            bg-info
-                        {% elif order.status.value == 'Delivered' %}
-                            bg-success
-                        {% else %}
-                            bg-light
-                        {% endif %}
-                    ">
+                    <span id="order-status" class="badge">
                         {{ order.status.value }}
                     </span>
                 </p>
@@ -43,6 +31,12 @@
                             {{ time_till_delivery }}
                         </span>
                     </p>
+
+                    {% if order.status not in ['Delivered', 'Cancelled'] %}
+                        <form method="POST" action="{{ url_for('cancel_order_route', order_id=order.id) }}">
+                            <button type="submit" class="btn btn-danger mt-3">Cancel Order</button>
+                        </form>
+                    {% endif %}
                     
                     {% if order.delivery.status != 'Delivered' %}
                         <form method="POST" action="{{ url_for('complete_delivery_route', delivery_id=order.delivery.id) }}">
@@ -93,53 +87,70 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    function updateOrderStatus() {
-        $.ajax({
-            url: '{{ url_for("get_order_status", order_id=order.id) }}',
-            method: 'GET',
-            success: function(response) {
-                // Update status badge
-                $('#order-status').text(response.status);
-                // Update badge color based on status
-                var badge = $('#order-status');
-                badge.removeClass();
-                switch(response.status) {
-                    case 'Pending':
-                        badge.addClass('badge bg-secondary');
-                        break;
-                    case 'Being Prepared':
-                        badge.addClass('badge bg-warning');
-                        break;
-                    case 'Being Delivered':
-                        badge.addClass('badge bg-info');
-                        break;
-                    case 'Delivered':
-                        badge.addClass('badge bg-success');
-                        // Redirect to Thank You page
-                        window.location.href = "{{ url_for('thank_you', order_id=order.id) }}";
-                        break;
-                    default:
-                        badge.addClass('badge bg-light');
-                }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function updateOrderStatus() {
+    $.ajax({
+        url: '{{ url_for("get_order_status", order_id=order.id) }}',
+        method: 'GET',
+        success: function(response) {
+            // Update status badge
+            $('#order-status').text(response.status);
 
-                // Update delivery personnel
-                $('#delivery-personnel').text(response.delivery_personnel);
-                
-                // Update estimated delivery time
-                $('#estimated-delivery-time').text(response.estimated_delivery_time);
-                
-                // Update time till delivery
-                $('#time_till_delivery').text(response.time_till_delivery);
-            },
-            error: function(error) {
-                console.error('Error fetching order status:', error);
+            // Update badge class based on status
+            var badgeClass = '';
+            switch(response.status) {
+                case 'Pending':
+                    badgeClass = 'badge bg-secondary';
+                    break;
+                case 'Being Prepared':
+                    badgeClass = 'badge bg-warning';
+                    break;
+                case 'Being Delivered':
+                    badgeClass = 'badge bg-info';
+                    break;
+                case 'Delivered':
+                    badgeClass = 'badge bg-success';
+                    break;
+                case 'Cancelled':
+                    badgeClass = 'badge bg-danger';
+                    break;
+                default:
+                    badgeClass = 'badge bg-light';
             }
-        });
-    }
+            // If status is 'Cancelled', redirect to the order page
+            if (response.status === 'Cancelled') {
+                window.location.href = "{{ url_for('order') }}";
+            }
 
-    // Update order status every 30 seconds
-    setInterval(updateOrderStatus, 30000);
-    </script>
+            $('#order-status').attr('class', badgeClass);
+
+            // Update delivery personnel
+            $('#delivery-personnel').text(response.delivery_personnel);
+
+            // Update estimated delivery time
+            $('#estimated-delivery-time').text(response.estimated_delivery_time);
+
+            // Update time till delivery
+            $('#time-till-delivery').text(response.time_till_delivery);
+
+            // Redirect to Thank You page if delivered
+            if (response.status === 'Delivered') {
+                window.location.href = "{{ url_for('thank_you', order_id=order.id) }}";
+            }
+        },
+        error: function(error) {
+            console.error('Error fetching order status:', error);
+        }
+    });
+}
+
+// Call updateOrderStatus every 1 second
+var pollingInterval = setInterval(updateOrderStatus, 1000);
+
+// Stop polling when the user leaves the page
+$(window).on('beforeunload', function(){
+    clearInterval(pollingInterval);
+});
+</script>
 {% endblock %}
