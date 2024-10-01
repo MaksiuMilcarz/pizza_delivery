@@ -1,0 +1,306 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Hero Section Text Styling */
+.hero-title {
+    font-family: 'Pacifico', cursive; /* Ensure a fun yet professional look */
+    font-size: 4rem; /* Adjust size as needed */
+    color: #ffd700; /* A gold-yellow color for a 'galactic' feel */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Adds depth to the text */
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem; 
+    font-family: 'Pacifico', cursive;
+    color: #111111; /* Classic white for contrast */
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Slight shadow for readability */
+}
+
+.explore-btn {
+    background-color: #ff4500; /* Bright orange-red button */
+    color: #fff;
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    border-radius: 30px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.explore-btn:hover {
+    background-color: #e63600; /* Darker shade on hover */
+    transform: scale(1.35);
+}
+
+/* Adjust hero content positioning */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Promotion Image Container Styling */
+.promotions-section{
+    padding-top: 37% !important;
+}
+.promotion-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto; /* Adjusts spacing around the image */
+}
+
+.promotion-img-container img {
+    max-width: 65%;  /* Ensure the image is responsive */
+    height: auto;
+    border-radius: 10px; /* Optional: adds some rounding to the image corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow effect */
+}
+
+
+/* Menu Section */
+.menu-section .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.menu-section .card-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.25rem;
+}
+
+.menu-section .badge-primary {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+/* Testimonials Section */
+.testimonials-section .testimonial-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.testimonials-section .testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.testimonials-section .testimonial-card p {
+    font-style: italic;
+    color: #6c757d;
+}
+
+.testimonials-section .testimonial-card h5 {
+    margin-top: 15px;
+    color: #343a40;
+}
+
+/* Contact Section */
+.contact-section form input,
+.contact-section form textarea {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 15px;
+    transition: border-color 0.3s;
+}
+
+.contact-section form input:focus,
+.contact-section form textarea:focus {
+    border-color: #80bdff;
+    outline: none;
+}
+
+.contact-section form button {
+    background-color: #c82333; /* Changed to red */
+    color: white;
+    border: none;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.contact-section form button:hover {
+    background-color: #a71d2a; /* Darker red on hover */
+    transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+    background-color: #343a40;
+    color: #fff;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .menu-section .card-img-top {
+        height: 150px;
+    }
+    
+    .promotions-section h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Ensure images are uniformly cropped */
+.image-container {
+    width: 100%;
+    height: 200px; /* Adjust the height as needed */
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Floating Cart Styles */
+.floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 300px;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+}
+
+.floating-cart .card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.floating-cart .card-header {
+    background-color: #c82333; /* Changed to red */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.floating-cart .remove-item {
+    color: #ff4d4d; /* Lighter red for better visibility */
+}
+
+.info-icon {
+    cursor: pointer;
+}
+
+/* Badge Styling */
+.badge-success {
+    background-color: #28a745 !important; /* Green */
+}
+
+.badge-primary {
+    background-color: #007bff !important; /* Blue */
+}
+
+.badge-info {
+    background-color: #17a2b8 !important; /* Teal */
+}
+
+/* Additional Custom Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.btn-outline-secondary {
+    border-color: #ced4da;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .btn {
+    border-left: none;
+}
+
+/* Navbar Brand Image Styling */
+.navbar-brand img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Optional: Adjust spacing on smaller screens */
+@media (max-width: 576px) {
+    .navbar-brand img {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Red Accent for Icons in Login/Register */
+.login-icon,
+.register-icon {
+    color: #c82333; /* Red color */
+    font-size: 2.5rem;
+    transition: color 0.3s;
+}
+
+.login-icon:hover,
+.register-icon:hover {
+    color: #a71d2a; /* Darker red on hover */
+}
+
+/* Red Buttons */
+.btn-primary {
+    background-color: #c82333;
+    border-color: #c82333;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #a71d2a;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-danger:hover {
+    background-color: #bd2130;
+    transform: scale(1.05);
+}
+
+/* Adjust card images */
+.menu-section .card-img-top {
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.carousel-inner {
+    padding: 20px;
+}
+

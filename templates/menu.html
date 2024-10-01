@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block title %}Our Menu - Pizza Planet{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Pizzas Section -->
+    <section id="pizzas">
+        <h2 class="text-center mb-4">Pizzas</h2>
+        <div class="row g-4">
+            {% for pizza in pizzas %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="image-container">
+                            <img src="{{ url_for('static', filename='images/' + pizza.image) }}" class="card-img-top img-fluid" alt="{{ pizza.name }}">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                {{ pizza.name }}
+                                <span class="badge 
+                                    {% if pizza.is_vegan and pizza.is_vegetarian %}
+                                        bg-success
+                                    {% elif pizza.is_vegetarian %}
+                                        bg-primary
+                                    {% elif pizza.is_vegan %}
+                                        bg-info
+                                    {% endif %}
+                                    ms-2"
+                                    title="Click for Ingredients">
+                                    {{ 'Vegan' if pizza.is_vegan else 'Vegetarian' }}
+                                </span>
+                                <!-- Info Icon with Bootstrap Tooltip -->
+                                <i class="bi bi-info-circle-fill info-icon ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ pizza.description }}"></i>
+                            </h5>
+                            <p class="card-text"><strong>${{ "%.2f"|format(pizza.base_price) }}</strong></p>
+                            <button class="btn btn-outline-primary select-button mt-auto" data-item='{{ pizza|tojson }}'>Select</button>
+                            <div class="quantity-container mt-2" style="display: none;">
+                                <label for="quantityPizza{{ pizza.id }}" class="form-label">Quantity:</label>
+                                <input type="number" min="1" max="100" value="1" id="quantityPizza{{ pizza.id }}" class="form-control quantity-input" data-item-id="{{ pizza.id }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Drinks Section -->
+    <section id="drinks" class="mt-5">
+        <h2 class="text-center mb-4">Drinks</h2>
+        <div class="row g-4">
+            {% for drink in drinks %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="image-container">
+                            <img src="{{ url_for('static', filename='images/' + drink.image) }}" class="card-img-top img-fluid" alt="{{ drink.name }}">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                {{ drink.name }}
+                                <i class="bi bi-info-circle-fill info-icon ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ drink.description }}"></i>
+                            </h5>
+                            <p class="card-text"><strong>${{ "%.2f"|format(drink.base_price) }}</strong></p>
+                            <button class="btn btn-outline-primary select-button mt-auto" data-item='{{ drink|tojson }}'>Select</button>
+                            <div class="quantity-container mt-2" style="display: none;">
+                                <label for="quantityDrink{{ drink.id }}" class="form-label">Quantity:</label>
+                                <input type="number" min="1" max="100" value="1" id="quantityDrink{{ drink.id }}" class="form-control quantity-input" data-item-id="{{ drink.id }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Desserts Section -->
+    <section id="desserts" class="mt-5">
+        <h2 class="text-center mb-4">Desserts</h2>
+        <div class="row g-4">
+            {% for dessert in desserts %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="image-container">
+                            <img src="{{ url_for('static', filename='images/' + dessert.image) }}" class="card-img-top img-fluid" alt="{{ dessert.name }}">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                {{ dessert.name }}
+                                <i class="bi bi-info-circle-fill info-icon ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ dessert.description }}"></i>
+                            </h5>
+                            <p class="card-text"><strong>${{ "%.2f"|format(dessert.base_price) }}</strong></p>
+                            <button class="btn btn-outline-primary select-button mt-auto" data-item='{{ dessert|tojson }}'>Select</button>
+                            <div class="quantity-container mt-2" style="display: none;">
+                                <label for="quantityDessert{{ dessert.id }}" class="form-label">Quantity:</label>
+                                <input type="number" min="1" max="100" value="1" id="quantityDessert{{ dessert.id }}" class="form-control quantity-input" data-item-id="{{ dessert.id }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<!-- Floating Cart -->
+<div id="floatingCart" class="floating-cart" style="display: none; position: fixed; bottom: 30px; right: 30px; width: 300px; z-index: 1000;">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>Your Selection</h5>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close"></button>
+        </div>
+        <div class="card-body">
+            <ul class="list-group" id="selectedItemsList">
+                <!-- Selected items will be dynamically inserted here -->
+            </ul>
+        </div>
+        <div class="card-footer">
+            <h5>Total: $<span id="totalPrice">0.00</span></h5>
+            <button id="submitOrder" class="btn btn-success btn-lg w-100 mt-2">Order Your Food!</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<!-- JavaScript to Handle Selection, Quantity, and Floating Cart -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elements Selection
+        const selectButtons = document.querySelectorAll('.select-button');
+        const floatingCart = document.getElementById('floatingCart');
+        const selectedItemsList = document.getElementById('selectedItemsList');
+        const totalPriceSpan = document.getElementById('totalPrice');
+        const submitOrder = document.getElementById('submitOrder');
+        const closeCartBtn = floatingCart ? floatingCart.querySelector('.btn-close') : null;
+        let selectedItems = {};
+
+        // Initialize Bootstrap tooltips (combined initialization)
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Handle Select Button Click
+        selectButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const item = JSON.parse(this.getAttribute('data-item'));
+                const quantityContainer = this.nextElementSibling;
+                const quantityInput = quantityContainer.querySelector('.quantity-input');
+
+                // Hide Select button and show Quantity input
+                this.style.display = 'none';
+                quantityContainer.style.display = 'block';
+
+                // Add item to selectedItems with initial quantity
+                selectedItems[item.id] = {
+                    ...item,
+                    quantity: parseInt(quantityInput.value) || 1
+                };
+                updateFloatingCart();
+            });
+        });
+
+        // Handle Quantity Change
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const itemId = this.getAttribute('data-item-id');
+                const newQuantity = parseInt(this.value) || 1;
+
+                if (selectedItems[itemId]) {
+                    selectedItems[itemId].quantity = newQuantity;
+                    updateFloatingCart();
+                }
+            });
+        });
+
+        // Update Floating Cart Content
+        function updateFloatingCart() {
+            selectedItemsList.innerHTML = '';
+            let total = 0.00;
+
+            for (const [id, item] of Object.entries(selectedItems)) {
+                const subtotal = (item.base_price * item.quantity).toFixed(2);
+                total += parseFloat(subtotal);
+
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                listItem.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong> x ${item.quantity}
+                    </div>
+                    <div>
+                        $${subtotal}
+                        <button class="btn btn-sm btn-danger ms-2 remove-item" data-item-id="${id}" style="color: white;">Remove</button>
+                    </div>
+                `;
+
+                selectedItemsList.appendChild(listItem);
+            }
+
+            totalPriceSpan.textContent = total.toFixed(2);
+
+            // Show or hide the floating cart based on selection
+            floatingCart.style.display = Object.keys(selectedItems).length > 0 ? 'block' : 'none';
+        }
+
+        // Handle Remove Item in Floating Cart
+        selectedItemsList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-item')) {
+                const itemId = e.target.getAttribute('data-item-id');
+                delete selectedItems[itemId];
+                updateFloatingCart();
+
+                // Reset the corresponding Select button and hide quantity input
+                const correspondingCard = document.querySelector(`[data-item-id="${itemId}"]`).closest('.card');
+                const selectButton = correspondingCard.querySelector('.select-button');
+                const quantityContainer = correspondingCard.querySelector('.quantity-container');
+
+                if (selectButton && quantityContainer) {
+                    selectButton.style.display = 'block';
+                    quantityContainer.style.display = 'none';
+                }
+            }
+        });
+
+        // Ensure floatingCart starts hidden
+        if (floatingCart) floatingCart.style.display = 'none';
+
+        // Handle Close Cart Button
+        if (closeCartBtn) {
+            closeCartBtn.addEventListener('click', function() {
+                floatingCart.style.display = 'none';
+            });
+        }
+
+        // Handle Order Submission
+        if (submitOrder) {
+            submitOrder.addEventListener('click', function() {
+                if (Object.keys(selectedItems).length === 0) {
+                    alert('Please select at least one item to order.');
+                    return;
+                }
+
+                // Prepare the order data
+                const orderData = [];
+                for (const [id, item] of Object.entries(selectedItems)) {
+                    orderData.push({ id: id, quantity: item.quantity });
+                }
+
+                // Redirect with query parameters
+                const queryParams = new URLSearchParams();
+                orderData.forEach(item => {
+                    queryParams.append('items', item.id);
+                    queryParams.append('quantities', item.quantity);
+                });
+                window.location.href = "{{ url_for('order') }}" + "?" + queryParams.toString();
+            });
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
+    submitOrder.addEventListener('click', function() {
+        if (Object.keys(selectedItems).length === 0) {
+            alert('Please select at least one item to order.');
+            return;
+        }
+
+        // Prepare the order data
+        const orderData = [];
+        for (const [id, item] of Object.entries(selectedItems)) {
+            orderData.push({ id: id, quantity: item.quantity });
+        }
+
+        // Redirect with query parameters
+        const queryParams = new URLSearchParams();
+        orderData.forEach(item => {
+            queryParams.append('items', item.id);
+            // You might want to include quantities as well
+            queryParams.append('quantities', item.quantity);
+        });
+        window.location.href = "{{ url_for('order') }}" + "?" + queryParams.toString();
+    });
+
+
+
+</script>
+{% endblock %}

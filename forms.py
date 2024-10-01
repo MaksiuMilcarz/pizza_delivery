@@ -70,16 +70,5 @@ class OrderForm(FlaskForm):
         if not super().validate(*args, **kwargs):
             return False
 
-        # Check if at least one item is a Pizza
-        has_pizza = False
-        for item_form in self.items:
-            menu_item = MenuItem.query.get(item_form.menu_item_id.data)
-            if menu_item and menu_item.category == MenuItemCategoryEnum.Pizza:
-                has_pizza = True
-                break
-
-        if not has_pizza:
-            self.items.errors.append('You must order at least one Pizza.')
-            return False
-
+        # Additional validations if needed
         return True
