@@ -1,27 +1,67 @@
-<!-- templates/login.html -->
 {% extends 'base.html' %}
 
+{% block title %}Login - Pizza Planet{% endblock %}
+
 {% block content %}
-    <h2>Login</h2>
-    <form method="POST" action="{{ url_for('login') }}">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.email.label }}<br>
-            {{ form.email(size=50) }}
-            {% for error in form.email.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-body p-5">
+                <h3 class="card-title text-center mb-4">Welcome Back</h3>
+                <form method="POST" action="{{ url_for('login') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label fw-bold") }}
+                        {{ form.email(class="form-control form-control-lg", placeholder="Enter your email") }}
+                        {% for error in form.email.errors %}
+                            <div class="text-danger mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div class="mb-4 position-relative">
+                        {{ form.password.label(class="form-label fw-bold") }}
+                        <div class="input-group">
+                            {{ form.password(class="form-control form-control-lg", placeholder="Enter your password", id="password") }}
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        {% for error in form.password.errors %}
+                            <div class="text-danger mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Remember Me Checkbox -->
+                    <div class="form-check mb-3">
+                        {{ form.remember(class="form-check-input") }}
+                        {{ form.remember.label(class="form-check-label") }}
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary btn-lg btn-block") }}
+                    </div>
+                </form>
+                <hr class="my-4">
+                <p class="text-center mb-0">Don't have an account? <a href="{{ url_for('register') }}" class="text-decoration-none">Register here</a>.</p>
+            </div>
         </div>
-        <div>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
-    <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a>.</p>
+    </div>
+</div>
+
+<!-- JavaScript for Password Visibility Toggle -->
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const passwordFieldType = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', passwordFieldType);
+
+        const icon = document.getElementById('toggleIcon');
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
+</script>
 {% endblock %}

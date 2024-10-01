@@ -6,12 +6,17 @@ from functionality.customer import create_customer
 from functionality.delivery import complete_delivery
 from functionality.order import create_order
 from functionality.utils import calculate_final_price
-from models import Customer, Delivery, DiscountCode, DiscountCodeUsage, MenuItem, Order, OrderItem, OrderStatusEnum
+from models import Customer, Delivery, DiscountCode, DiscountCodeUsage, MenuItem, Order, OrderItem, OrderStatusEnum, MenuItemCategoryEnum
 from forms import RegistrationForm, LoginForm, OrderForm, OrderItemForm
 from datetime import datetime
 from flask import jsonify
 
 def register_routes(app):
+    @app.route('/')
+    @app.route('/index')
+    def index():
+        return render_template('index.html')
+    
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         form = RegistrationForm()
@@ -41,10 +46,11 @@ def register_routes(app):
             if customer and check_password_hash(customer.password, form.password.data):
                 login_user(customer)
                 flash('Logged in successfully!', 'success')
-                return redirect(url_for('order'))
+                return redirect(url_for('index'))  # Redirect to 'index' instead of 'order'
             else:
                 flash('Invalid email or password.', 'danger')
         return render_template('login.html', form=form)
+
 
 
 
@@ -54,8 +60,57 @@ def register_routes(app):
         logout_user()
         flash('You have been logged out.', 'info')
         return redirect(url_for('login'))
+    
+
+    @app.route('/menu', methods=['GET'])
+    @login_required
+    def menu():
+        # Manually define the menu items
+        pizzas = [
+            {"id": 1, "name": "Margherita", "base_price": 5.00, "image": "margherita.jpeg", 
+             "description": "Classic delight with 100% real mozzarella cheese", "is_vegetarian": True, "is_vegan": False},
+            {"id": 2, "name": "Pepperoni", "base_price": 6.50, "image": "pepperoni.jpeg", 
+             "description": "Loaded with pepperoni and cheese", "is_vegetarian": False, "is_vegan": False},
+            {"id": 3, "name": "Vegan Delight", "base_price": 7.00, "image": "vegan_delight.jpeg", 
+             "description": "A healthy choice with fresh vegetables", "is_vegetarian": True, "is_vegan": True},
+            {"id": 4, "name": "Hawaiian", "base_price": 6.00, "image": "hawaiian.jpeg", 
+             "description": "Ham, pineapple, and mozzarella cheese", "is_vegetarian": False, "is_vegan": False},
+            {"id": 5, "name": "Mushroom", "base_price": 5.50, "image": "mushroom.jpeg", 
+             "description": "Loaded with mushrooms and mozzarella cheese", "is_vegetarian": True, "is_vegan": False},
+            {"id": 6, "name": "BBQ Chicken", "base_price": 7.50, "image": "bbq_chicken.jpeg", 
+             "description": "BBQ sauce, chicken, and onions", "is_vegetarian": False, "is_vegan": False},
+            {"id": 7, "name": "Spinach & Feta", "base_price": 6.00, "image": "spinach_feta.jpeg", 
+             "description": "Spinach, feta cheese, and mozzarella", "is_vegetarian": True, "is_vegan": False},
+            {"id": 8, "name": "Four Cheese", "base_price": 6.50, "image": "four_cheese.jpeg", 
+             "description": "A blend of four cheeses", "is_vegetarian": True, "is_vegan": False},
+            {"id": 9, "name": "Supreme", "base_price": 8.00, "image": "supreme.jpeg", 
+             "description": "Pepperoni, mushrooms, bell peppers, and onions", "is_vegetarian": False, "is_vegan": False},
+            {"id": 10, "name": "Mediterranean", "base_price": 7.00, "image": "mediterranean.png", 
+             "description": "Olives, feta, and bell peppers", "is_vegetarian": True, "is_vegan": False}
+        ]
+
+        drinks = [
+            {"id": 11, "name": "Coca Cola", "base_price": 1.50, "image": "coca_cola.jpeg", 
+             "description": "Refreshing Coca Cola"},
+            {"id": 12, "name": "Sprite", "base_price": 1.50, "image": "sprite.jpeg", 
+             "description": "Lemon-lime flavored soda"},
+            {"id": 13, "name": "Water", "base_price": 1.00, "image": "water.jpeg", 
+             "description": "Pure and clean bottled water"},
+            {"id": 14, "name": "Orange Juice", "base_price": 2.00, "image": "orange_juice.jpeg", 
+             "description": "Freshly squeezed orange juice"}
+        ]
+
+        desserts = [
+            {"id": 15, "name": "Tiramisu", "base_price": 3.50, "image": "tiramisu.jpeg", 
+             "description": "Classic Italian dessert with mascarpone"},
+            {"id": 16, "name": "Gelato", "base_price": 2.50, "image": "gelato.jpeg", 
+             "description": "Creamy Italian ice cream"}
+        ]
 
 
+        # Render the template with the manually defined menu items
+        return render_template('menu.html', pizzas=pizzas, drinks=drinks, desserts=desserts)
+    
 
     @app.route('/order', methods=['GET', 'POST'])
     @login_required
@@ -81,20 +136,7 @@ def register_routes(app):
                 item_form.menu_item_id.choices = menu_item_choices
 
         if form.validate_on_submit():
-            # Extract valid order items
-            order_items_data = []
-            for item_form in form.items:
-                menu_item_id = item_form.menu_item_id.data
-                quantity = item_form.quantity.data
-                if menu_item_id and quantity:
-                    order_items_data.append({
-                        'menu_item_id': menu_item_id,
-                        'quantity': quantity
-                    })
-
-            # Handle discount code
-            discount_code = None
-            discount_percentage = Decimal('0.00')
+            # Process form submission
             discount_code_str = form.discount_code.data.strip()
             if discount_code_str:
                 discount_code = DiscountCode.query.filter_by(code=discount_code_str).first()
@@ -117,21 +159,21 @@ def register_routes(app):
             try:
                 new_order = create_order(
                     customer=current_user,
-                    items=order_items_data,
+                    items=[{'menu_item_id': item.id, 'quantity': 1} for item in selected_items],
                     discount_percentage=discount_percentage,
                     discount_code=discount_code
                 )
+                db.session.commit()
                 flash('Your order has been placed successfully!', 'success')
                 return redirect(url_for('order_status_page', order_id=new_order.id))
             except Exception as e:
+                db.session.rollback()
                 flash(f'An error occurred while placing your order: {str(e)}', 'danger')
         else:
-            if form.errors:
-                for field_errors in form.errors.values():
-                    for error in field_errors:
-                        flash(error, 'danger')
+            # Initial rendering or form validation failed
+            pass
 
-        return render_template('order.html', form=form)
+        return render_template('order.html', selected_items=selected_items, form=form, discount_percentage=discount_percentage)
 
 
 
