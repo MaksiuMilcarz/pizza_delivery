@@ -76,6 +76,7 @@ class Customer(UserMixin, db.Model):  # Inherit from UserMixin
     password = Column(String(255), nullable=False)  # Store hashed passwords
     total_pizzas_ordered = Column(Integer, default=0)
     birthday_pizza_claimed = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)   
 
     # Relationships
     orders = relationship('Order', back_populates='customer')

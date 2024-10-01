@@ -114,7 +114,7 @@ def create_order(customer, items, discount_percentage=Decimal('0.00'), discount_
         func=transition_to_being_delivered,
         args=[new_order.id],
         trigger='date',
-        run_date=datetime.now() + timedelta(minutes=5)
+        run_date=datetime.now() + timedelta(minutes=1)
     )
     
     time_to_deliver = calculate_estimated_delivery_interval(new_order, new_delivery)
@@ -123,7 +123,7 @@ def create_order(customer, items, discount_percentage=Decimal('0.00'), discount_
         func=transition_to_delivered,
         args=[new_order.id],
         trigger='date',
-        run_date=datetime.now() + timedelta(minutes=time_to_deliver)
+        run_date=datetime.now() + timedelta(minutes=2)
     )
 
     return new_order

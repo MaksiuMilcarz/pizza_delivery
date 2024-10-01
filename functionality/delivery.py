@@ -106,7 +106,7 @@ def calculate_estimated_delivery_time(order, delivery_personnel):
     try:
         restaurant_postal_code = 6211  # Example postal code of the restaurant
         customer_postal_code = int(order.customer.postal_code)
-        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)//2
+        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)//5
         delivery_distance_time = timedelta(minutes=postal_code_difference)
     except ValueError:
         # Default delivery time if postal codes are non-numeric
@@ -144,7 +144,7 @@ def calculate_estimated_delivery_interval(order, delivery_personnel):
     try:
         restaurant_postal_code = 6211  # Example postal code of the restaurant
         customer_postal_code = int(order.customer.postal_code)
-        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)//2
+        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)//5
         delivery_distance_time = postal_code_difference
     except ValueError:
         # Default delivery time if postal codes are non-numeric

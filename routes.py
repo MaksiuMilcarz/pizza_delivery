@@ -7,12 +7,119 @@ from functionality.delivery import complete_delivery
 from functionality.order import create_order
 from functionality.order import cancel_order
 from functionality.utils import calculate_final_price
-from models import Customer, Delivery, DiscountCode, DiscountCodeUsage, MenuItem, Order, OrderItem, OrderStatusEnum
-from forms import RegistrationForm, LoginForm, OrderForm, OrderItemForm
+from models import Customer, Delivery, DeliveryPersonnel, DiscountCode, DiscountCodeUsage, MenuItem, Order, OrderItem, OrderStatusEnum
+from forms import EarningsReportFilterForm, RegistrationForm, LoginForm, OrderForm, OrderItemForm
 from datetime import datetime
 from flask import jsonify
 
 def register_routes(app):
+    @app.route('/my_orders', methods=['GET'])
+    @login_required
+    def my_orders():
+        from setup.extensions import db 
+        # Fetch orders belonging to the current user
+        orders = db.session.query(
+            Order.id.label('order_id'),
+            Order.order_date,
+            Order.status,
+            DeliveryPersonnel.name.label('delivery_personnel_name'),
+            DeliveryPersonnel.phone.label('delivery_personnel_phone')
+        ).outerjoin(Order.delivery).outerjoin(DeliveryPersonnel).filter(
+            Order.customer_id == current_user.id
+        ).all()
+
+        return render_template('my_orders.html', orders=orders)
+
+    @app.route('/earnings_report', methods=['GET', 'POST'])
+    @login_required
+    def earnings_report():
+        from setup.extensions import db
+        from datetime import datetime, date, timedelta
+        from decimal import Decimal
+        # Access control: Only admins can access
+        if not current_user.is_admin:
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('order'))
+
+        form = EarningsReportFilterForm(request.args)
+        filters = []
+        if form.validate():
+            # Filter by postal code
+            if form.postal_code.data:
+                filters.append(Customer.postal_code == form.postal_code.data)
+            # Filter by gender
+            if form.gender.data:
+                filters.append(Customer.gender == form.gender.data)
+            # Filter by age range
+            today = date.today()
+            if form.min_age.data is not None:
+                try:
+                    max_birthdate = date(today.year - form.min_age.data, today.month, today.day)
+                    filters.append(Customer.birthdate <= max_birthdate)
+                except ValueError as e:
+                    flash(f'Invalid minimum age input: {e}', 'danger')
+            if form.max_age.data is not None:
+                try:
+                    min_birthdate = date(today.year - form.max_age.data - 1, today.month, today.day) + timedelta(days=1)
+                    filters.append(Customer.birthdate >= min_birthdate)
+                except ValueError as e:
+                    flash(f'Invalid maximum age input: {e}', 'danger')
+        else:
+            if request.args:
+                flash('Invalid filter inputs.', 'warning')
+                # Log form errors for debugging
+                app.logger.warning(f"EarningsReportFilterForm validation errors: {form.errors}")
+
+        # Join Orders with Customers
+        query = db.session.query(
+            Order.id.label('order_id'),
+            Order.order_date,
+            Order.total_price,
+            Customer.name.label('customer_name'),
+            Customer.gender,
+            Customer.birthdate,
+            Customer.postal_code
+        ).join(Customer)
+
+        if filters:
+            query = query.filter(*filters)
+
+        # Retrieve orders
+        orders = query.all()
+
+        # Calculate aggregates
+        total_earnings = sum(order.total_price for order in orders) or Decimal('0.00')
+        total_orders = len(orders)
+        average_order_value = (total_earnings / total_orders) if total_orders > 0 else Decimal('0.00')
+
+        return render_template('earnings_report.html', form=form, orders=orders,
+                               total_earnings=total_earnings,
+                               total_orders=total_orders,
+                               average_order_value=average_order_value,
+                               date=date)  # Pass 'date' to the template
+
+    @app.route('/order_management', methods=['GET'])
+    @login_required
+    def order_management():
+        from setup.extensions import db
+        # Access control: Only admins can access this page
+        if not current_user.is_admin:
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('order'))  # Redirect to order page or any other appropriate page
+
+        # Fetch all orders, joined with customer and delivery personnel
+        orders = db.session.query(
+            Order.id.label('order_id'),
+            Order.order_date,
+            Customer.name.label('customer_name'),
+            Order.status,
+            DeliveryPersonnel.name.label('delivery_personnel_name'),
+            Customer.postal_code
+        ).join(Customer).outerjoin(Order.delivery).outerjoin(DeliveryPersonnel).all()
+
+        return render_template('order_management.html', orders=orders)
+    
+    
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         form = RegistrationForm()
