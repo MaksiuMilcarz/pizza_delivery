@@ -33,6 +33,8 @@ class MenuItem(db.Model):
     name = Column(String(50), nullable=False)
     category = Column(Enum(MenuItemCategoryEnum), nullable=False)
     base_price = Column(DECIMAL(10, 2), nullable=False)
+    image = Column(String(200), nullable=False)
+    description = Column(String(255), nullable=True)
     is_vegan = Column(Boolean, default=False)
     is_vegetarian = Column(Boolean, default=False)
 
@@ -43,6 +45,19 @@ class MenuItem(db.Model):
         backref=db.backref('menu_items', lazy='dynamic')
     )
     order_items = relationship('OrderItem', back_populates='menu_item')
+    
+    def to_dict(self):
+        """Convert MenuItem instance to a serializable dictionary."""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'category': self.category.value,
+            'base_price': float(self.base_price),
+            'image': self.image,
+            'description': self.description,
+            'is_vegan': self.is_vegan,
+            'is_vegetarian': self.is_vegetarian
+        }
 
 ## Ingredient
 class Ingredient(db.Model):

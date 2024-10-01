@@ -70,9 +70,9 @@ def register_routes(app):
         menu_items = MenuItem.query.all()
 
         # Optionally, categorize them
-        pizzas = [item for item in menu_items if item.category == MenuItemCategoryEnum.Pizza]
-        drinks = [item for item in menu_items if item.category == MenuItemCategoryEnum.Drink]
-        desserts = [item for item in menu_items if item.category == MenuItemCategoryEnum.Dessert]
+        pizzas = [item.to_dict() for item in menu_items if item.category == MenuItemCategoryEnum.Pizza]
+        drinks = [item.to_dict() for item in menu_items if item.category == MenuItemCategoryEnum.Drink]
+        desserts = [item.to_dict() for item in menu_items if item.category == MenuItemCategoryEnum.Dessert]
 
         # Render the template with the manually defined menu items
         return render_template('menu.html', pizzas=pizzas, drinks=drinks, desserts=desserts)
