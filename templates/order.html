@@ -18,18 +18,21 @@
                                 <strong>{{ item.name }}</strong>
                                 <p class="mb-0">{{ item.description }}</p>
                             </div>
-                            <span>${{ "%.2f"|format(item.base_price) }}</span>
+                            <span>${{ "%.2f"|format(item.final_price) }}</span>
                         </li>
                     {% endfor %}
                 </ul>
 
                 <!-- Discount Code -->
-                <div class="mb-3">
-                    {{ form.discount_code.label(class="form-label") }}
-                    {{ form.discount_code(class="form-control", placeholder="Enter discount code if any") }}
-                    {% for error in form.discount_code.errors %}
-                        <div class="text-danger mt-1">{{ error }}</div>
-                    {% endfor %}
+                <div class="mb-3 d-flex">
+                    <div class="flex-grow-1">
+                        {{ form.discount_code.label(class="form-label") }}
+                        {{ form.discount_code(class="form-control", placeholder="Enter discount code if any") }}
+                        {% for error in form.discount_code.errors %}
+                            <div class="text-danger mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="apply-discount-btn" class="btn btn-primary ms-2 mt-auto">Apply</button>
                 </div>
             </div>
             <div class="col-md-4">
@@ -38,21 +41,19 @@
                     <!-- Subtotal -->
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Subtotal
-                        <span>${{ "%.2f"|format(subtotal) }}</span>
+                        <span id="subtotal-display">${{ "%.2f"|format(subtotal) }}</span>
                     </li>
 
                     <!-- Discount -->
-                    {% if discount_percentage > 0 %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Discount ({{ discount_percentage }}%)
-                            <span>-${{ "%.2f"|format(discount_amount) }}</span>
-                        </li>
-                    {% endif %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center" id="discount-display" style="display: none;">
+                        Discount (<span id="discount-percentage-display">{{ discount_percentage }}</span>%)
+                        <span id="discount-amount-display">-${{ "%.2f"|format(discount_amount) }}</span>
+                    </li>
 
                     <!-- Total -->
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <strong>Total</strong>
-                        <strong>${{ "%.2f"|format(total_after_discount) }}</strong>
+                        <strong id="total-display">${{ "%.2f"|format(total_after_discount) }}</strong>
                     </li>
                 </ul>
                 <div class="d-grid">
@@ -62,4 +63,59 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const applyDiscountBtn = document.getElementById('apply-discount-btn');
+
+        applyDiscountBtn.addEventListener('click', function () {
+            const discountCode = document.getElementById('discount_code').value.trim();
+
+            if (!discountCode) {
+                alert('Please enter a discount code.');
+                return;
+            }
+
+            // Make an AJAX request to apply the discount
+            fetch('{{ url_for("apply_discount") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ form.csrf_token._value() }}'
+                },
+                body: JSON.stringify({ discount_code: discountCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the displayed prices
+                    document.getElementById('subtotal-display').textContent = `$${data.subtotal.toFixed(2)}`;
+                    document.getElementById('discount-percentage-display').textContent = data.discount_percentage;
+                    document.getElementById('discount-amount-display').textContent = `-$${data.discount_amount.toFixed(2)}`;
+                    document.getElementById('total-display').textContent = `$${data.total_after_discount.toFixed(2)}`;
+
+                    // Show the discount line
+                    document.getElementById('discount-display').style.display = 'flex';
+
+                    // Debugging statements
+                    console.log("Discount Applied Successfully:");
+                    console.log(`Discount Percentage: ${data.discount_percentage}%`);
+                    console.log(`Subtotal: $${data.subtotal.toFixed(2)}`);
+                    console.log(`Discount Amount: -$${data.discount_amount.toFixed(2)}`);
+                    console.log(`Total After Discount: $${data.total_after_discount.toFixed(2)}`);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error applying discount:', error);
+                alert('An error occurred while applying the discount. Please try again.');
+            });
+        });
+    });
+</script>
+    
 {% endblock %}

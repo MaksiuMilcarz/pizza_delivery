@@ -304,3 +304,88 @@ footer p {
     padding: 20px;
 }
 
+
+/* Custom Styles for Register Page */
+
+/* Body Background */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Card Styling */
+.card {
+    border-radius: 15px;
+}
+
+/* Form Labels */
+.form-floating > label {
+    color: #6c757d;
+}
+
+/* Form Fields */
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 20px;
+    height: auto;
+}
+
+/* Placeholder Text */
+.form-control::placeholder, .form-select::placeholder {
+    color: transparent;
+}
+
+/* Form Labels Floating Effect */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-select:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select:not(:placeholder-shown) ~ label {
+    opacity: 0.65;
+    transform: scale(0.85) translateY(-1.5rem) translateX(0.15rem);
+}
+
+/* Submit Button */
+.btn-primary {
+    background-color: #ff4500;
+    border-color: #ff4500;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #e03e00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Error Messages */
+.text-danger {
+    font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-control, .form-select {
+        padding: 15px;
+    }
+}
+
+/* Additional Aesthetics */
+h2 {
+    font-family: 'Pacifico', cursive;
+    color: #ff4500;
+}
+
+a {
+    color: #ff4500;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #e03e00;
+}
+
+

@@ -12,7 +12,7 @@ from forms import RegistrationForm, LoginForm, OrderForm, OrderItemForm
 from datetime import datetime
 from flask import jsonify
 from flask import request, session
-from decimal import Decimal
+from functionality.utils import calculate_final_price 
 
 def register_routes(app):
     @app.route('/')
@@ -78,16 +78,12 @@ def register_routes(app):
 
         # Render the template with the manually defined menu items
         return render_template('menu.html', pizzas=pizzas, drinks=drinks, desserts=desserts)
-    
-
-    
-
+        
     @app.route('/order', methods=['GET', 'POST'])
     @login_required
     def order():
-        from setup.extensions import db
-
-        discount_percentage = Decimal('0.00')  # Default discount
+        discount_percentage = Decimal(session.get('discount_percentage', 0.00))
+        discount_code_str = session.get('discount_code', None)
         discount_code = None  # Initialize discount_code variable
 
         # Initialize selected_items
@@ -116,34 +112,58 @@ def register_routes(app):
             else:
                 selected_items = []
 
+        # Calculate final price for each selected item and store in a list
+        item_totals = []
+        for item in selected_items:
+            final_price = calculate_final_price(item.base_price)
+            item.final_price = final_price  # Add final_price attribute to item for use in template
+            item_totals.append(final_price)
+
         # Calculate subtotal
-        subtotal = sum(item.base_price for item in selected_items)
+        subtotal = sum(item_totals)
 
         # Proceed with your existing logic
         form = OrderForm()
 
-        if form.validate_on_submit():
-            # Process form submission
-            discount_code_str = form.discount_code.data.strip()
-            if discount_code_str:
-                discount_code = DiscountCode.query.filter_by(code=discount_code_str).first()
-                if not discount_code:
-                    form.discount_code.errors.append('Invalid discount code.')
-                    return render_template('order.html', selected_items=selected_items, form=form, subtotal=subtotal, discount_percentage=discount_percentage)
-                else:
-                    # Check if the user has already used this code
-                    usage = DiscountCodeUsage.query.filter_by(
-                        customer_id=current_user.id,
-                        code=discount_code.code
-                    ).first()
-                    if usage and usage.is_used:
-                        form.discount_code.errors.append('You have already used this discount code.')
-                        return render_template('order.html', selected_items=selected_items, form=form, subtotal=subtotal, discount_percentage=discount_percentage)
-                    else:
-                        discount_percentage = Decimal(str(discount_code.discount_percentage))
+        # **Set up choices for form fields that require them**
+        menu_items = MenuItem.query.all()
+        menu_item_choices = [
+            (item.id, f"{item.name} (${calculate_final_price(item.base_price)})")
+            for item in menu_items
+        ]
 
+        form.process(request.form)
+
+        # Initialize form items and set choices
+        if len(form.items) == 0:
+            form.items.append_entry()
+        for item_form in form.items:
+            item_form.menu_item_id.choices = menu_item_choices
+
+        if form.validate_on_submit():
             # Create the order
             try:
+                # Re-validate the discount code
+                if discount_code_str:
+                    discount_code = DiscountCode.query.filter_by(code=discount_code_str).first()
+                    if discount_code:
+                        # Check if the user has already used this code
+                        usage = DiscountCodeUsage.query.filter_by(
+                            customer_id=current_user.id,
+                            code=discount_code.code
+                        ).first()
+                        if usage and usage.is_used:
+                            flash('You have already used this discount code.', 'danger')
+                            return redirect(url_for('order'))
+                        else:
+                            discount_percentage = Decimal(str(discount_code.discount_percentage))
+                    else:
+                        discount_percentage = Decimal('0.00')
+                        discount_code = None
+                else:
+                    discount_percentage = Decimal('0.00')
+                    discount_code = None
+
                 new_order = create_order(
                     customer=current_user,
                     items=[{'menu_item_id': item.id, 'quantity': 1} for item in selected_items],
@@ -152,8 +172,10 @@ def register_routes(app):
                 )
                 db.session.commit()
                 flash('Your order has been placed successfully!', 'success')
-                # Clear selected items from session
+                # Clear selected items and discount from session
                 session.pop('selected_item_ids', None)
+                session.pop('discount_code', None)
+                session.pop('discount_percentage', None)
                 return redirect(url_for('order_status_page', order_id=new_order.id))
             except Exception as e:
                 db.session.rollback()
@@ -166,6 +188,13 @@ def register_routes(app):
         discount_amount = (subtotal * (discount_percentage / Decimal('100'))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         total_after_discount = (subtotal - discount_amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
+        # Debugging statements
+        print("Order Summary:")
+        print(f"Subtotal: ${subtotal}")
+        print(f"Discount Percentage: {discount_percentage}%")
+        print(f"Discount Amount: -${discount_amount}")
+        print(f"Total After Discount: ${total_after_discount}")
+
         return render_template(
             'order.html',
             selected_items=selected_items,
@@ -176,7 +205,61 @@ def register_routes(app):
             discount_percentage=discount_percentage
         )
 
+    @app.route('/apply_discount', methods=['POST'])
+    @login_required
+    def apply_discount():
+        data = request.get_json()
+        discount_code_str = data.get('discount_code', '').strip()
 
+        # Validate the discount code
+        discount_code = DiscountCode.query.filter_by(code=discount_code_str).first()
+        if not discount_code:
+            print(f"Discount code '{discount_code_str}' is invalid.")  # Debugging line
+            return jsonify({'success': False, 'message': 'Invalid discount code.'}), 400
+
+        # Check if the user has already used this code
+        usage = DiscountCodeUsage.query.filter_by(
+            customer_id=current_user.id,
+            code=discount_code.code
+        ).first()
+        if usage and usage.is_used:
+            print(f"Discount code '{discount_code_str}' has already been used by user {current_user.id}.")  # Debugging line
+            return jsonify({'success': False, 'message': 'You have already used this discount code.'}), 400
+
+        # Calculate the new total with the discount applied
+        discount_percentage = discount_code.discount_percentage
+
+        # Retrieve selected items from session
+        selected_item_ids = session.get('selected_item_ids', [])
+        selected_items = MenuItem.query.filter(MenuItem.id.in_(selected_item_ids)).all()
+
+        # Calculate final prices
+        item_totals = [calculate_final_price(item.base_price) for item in selected_items]
+        subtotal = sum(item_totals)
+
+        # Apply the discount
+        discount_amount = (subtotal * (discount_percentage / Decimal('100'))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        total_after_discount = (subtotal - discount_amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+        # Debugging statements
+        print(f"Discount Code Applied: {discount_code_str}")
+        print(f"Discount Percentage: {discount_percentage}%")
+        print(f"Subtotal before discount: ${subtotal}")
+        print(f"Discount Amount: -${discount_amount}")
+        print(f"Total after discount: ${total_after_discount}")
+
+        # Store the discount code and percentage in the session
+        session['discount_code'] = discount_code_str
+        session['discount_percentage'] = float(discount_percentage)
+
+        # Respond with updated values
+        return jsonify({
+            'success': True,
+            'subtotal': float(subtotal),
+            'discount_percentage': float(discount_percentage),
+            'discount_amount': float(discount_amount),
+            'total_after_discount': float(total_after_discount)
+        })
 
     @app.route('/order_status/<int:order_id>/status')
     @login_required

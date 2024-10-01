@@ -1,75 +1,110 @@
 <!-- templates/register.html -->
 {% extends 'base.html' %}
 
+{% block title %}Register - Pizza Planet{% endblock %}
+
 {% block content %}
-    <h2>Register</h2>
-    <form method="POST" action="{{ url_for('register') }}">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.name.label }}<br>
-            {{ form.name(size=32) }}
-            {% for error in form.name.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Create Your Account</h2>
+                    <form method="POST" action="{{ url_for('register') }}">
+                        {{ form.hidden_tag() }}
+
+                        <!-- Name -->
+                        <div class="form-floating mb-3">
+                            {{ form.name(class="form-control", id="floatingName", placeholder="Full Name") }}
+                            {{ form.name.label(class="form-label", for="floatingName") }}
+                            {% for error in form.name.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-floating mb-3">
+                            {{ form.gender(class="form-select", id="floatingGender") }}
+                            {{ form.gender.label(class="form-label", for="floatingGender") }}
+                            {% for error in form.gender.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Birthdate -->
+                        <div class="form-floating mb-3">
+                            {{ form.birthdate(class="form-control", id="floatingBirthdate", placeholder="Birthdate") }}
+                            {{ form.birthdate.label(class="form-label", for="floatingBirthdate") }}
+                            {% for error in form.birthdate.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-floating mb-3">
+                            {{ form.phone(class="form-control", id="floatingPhone", placeholder="Phone Number") }}
+                            {{ form.phone.label(class="form-label", for="floatingPhone") }}
+                            {% for error in form.phone.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-floating mb-3">
+                            {{ form.address(class="form-control", id="floatingAddress", placeholder="Address") }}
+                            {{ form.address.label(class="form-label", for="floatingAddress") }}
+                            {% for error in form.address.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Postal Code -->
+                        <div class="form-floating mb-3">
+                            {{ form.postal_code(class="form-control", id="floatingPostalCode", placeholder="Postal Code") }}
+                            {{ form.postal_code.label(class="form-label", for="floatingPostalCode") }}
+                            {% for error in form.postal_code.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            {{ form.email(class="form-control", id="floatingEmail", placeholder="Email") }}
+                            {{ form.email.label(class="form-label", for="floatingEmail") }}
+                            {% for error in form.email.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-floating mb-3">
+                            {{ form.password(class="form-control", id="floatingPassword", placeholder="Password") }}
+                            {{ form.password.label(class="form-label", for="floatingPassword") }}
+                            {% for error in form.password.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-floating mb-4">
+                            {{ form.confirm_password(class="form-control", id="floatingConfirmPassword", placeholder="Confirm Password") }}
+                            {{ form.confirm_password.label(class="form-label", for="floatingConfirmPassword") }}
+                            {% for error in form.confirm_password.errors %}
+                                <div class="text-danger mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-lg btn-primary") }}
+                        </div>
+
+                        <!-- Login Link -->
+                        <p class="text-center mt-3 mb-0">Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div>
-            {{ form.gender.label }}<br>
-            {{ form.gender() }}
-            {% for error in form.gender.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.birthdate.label }}<br>
-            {{ form.birthdate() }}
-            {% for error in form.birthdate.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.phone.label }}<br>
-            {{ form.phone(size=15) }}
-            {% for error in form.phone.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.address.label }}<br>
-            {{ form.address(size=50) }}
-            {% for error in form.address.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.postal_code.label }}<br>
-            {{ form.postal_code(size=10) }}
-            {% for error in form.postal_code.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.email.label }}<br>
-            {{ form.email(size=50) }}
-            {% for error in form.email.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.confirm_password.label }}<br>
-            {{ form.confirm_password(size=32) }}
-            {% for error in form.confirm_password.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
+    </div>
+</div>
 {% endblock %}
