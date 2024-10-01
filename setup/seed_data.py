@@ -219,22 +219,7 @@ def seed_data():
     )
     db.session.add(customer)
     db.session.commit()
-    print("Customer 1 seeded.")
-    customer = Customer(
-        name='Mateo Gerald',
-        gender=GenderEnum.Male,
-        birthdate=datetime(2005, 7, 9),
-        phone='0123456789',
-        address='Nido A41',
-        postal_code='6211',
-        email='mateococo@gmail.com',
-        password=generate_password_hash('passward'),
-        total_pizzas_ordered=0,
-        birthday_pizza_claimed=False
-    )
-    db.session.add(customer)
-    db.session.commit()
-    print("Customer 2 seeded.")
+    print("Customer seeded.")
     
     # Seed Discount Codes
     discount_codes = [

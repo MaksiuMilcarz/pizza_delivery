@@ -5,7 +5,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functionality.customer import create_customer
 from functionality.delivery import complete_delivery
 from functionality.order import create_order
-from functionality.order import cancel_order
 from functionality.utils import calculate_final_price
 from models import Customer, Delivery, DiscountCode, DiscountCodeUsage, MenuItem, Order, OrderItem, OrderStatusEnum, MenuItemCategoryEnum
 from forms import RegistrationForm, LoginForm, OrderForm, OrderItemForm
@@ -199,8 +198,6 @@ def register_routes(app):
         else:
             time_till_delivery_str = 'Calculating...'
 
-        print(f"Order {order_id} status: {order.status.value}")
-
         response = {
             'status': order.status.value,
             'delivery_personnel': delivery.delivery_personnel.name if delivery and delivery.delivery_personnel else 'Awaiting assignment',
@@ -260,24 +257,6 @@ def register_routes(app):
             return redirect(url_for('order_status_page', order_id=delivery.order_id))
         
     
-    
-    @app.route('/cancel_order/<int:order_id>', methods=['POST'])
-    @login_required
-    def cancel_order_route(order_id):
-        try:
-            cancel_order(order_id, current_user.id)
-            flash('Your order has been cancelled.', 'success')
-            return redirect(url_for('thank_you', order_id=order_id))  # Corrected redirect
-        except ValueError as ve:
-            flash(str(ve), 'danger')
-            app.logger.warning(f"Cancellation failed for Order ID {order_id}: {ve}")
-            return redirect(url_for('order_status_page', order_id=order_id))
-        except Exception as e:
-            flash('An unexpected error occurred while cancelling your order.', 'danger')
-            app.logger.error(f"Unexpected error during cancellation of Order ID {order_id}: {e}")
-            return redirect(url_for('order_status_page', order_id=order_id))
-
-
     
     @app.route('/thank_you/<int:order_id>', methods=['GET'])
     @login_required

@@ -89,10 +89,10 @@ def calculate_estimated_delivery_time(order, delivery_personnel):
     from datetime import datetime, timedelta
 
     # Base preparation time
-    preparation_time = timedelta(minutes=5)  # Base time for order preparation
+    preparation_time = timedelta(minutes=10)  # Base time for order preparation
 
     # Additional time per item
-    additional_time_per_item = timedelta(minutes=1)
+    additional_time_per_item = timedelta(minutes=2)
 
     # Calculate total additional time based on number of pizzas and desserts
     total_additional_time = timedelta()
@@ -106,7 +106,7 @@ def calculate_estimated_delivery_time(order, delivery_personnel):
     try:
         restaurant_postal_code = 6211  # Example postal code of the restaurant
         customer_postal_code = int(order.customer.postal_code)
-        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)//2
+        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)
         delivery_distance_time = timedelta(minutes=postal_code_difference)
     except ValueError:
         # Default delivery time if postal codes are non-numeric
@@ -127,10 +127,10 @@ def calculate_estimated_delivery_time(order, delivery_personnel):
 
 def calculate_estimated_delivery_interval(order, delivery_personnel):
     # Base preparation time
-    preparation_time = 5 
+    preparation_time = 10  
 
     # Additional time per item
-    additional_time_per_item = 1
+    additional_time_per_item = 2
 
     # Calculate total additional time based on number of pizzas and desserts
     total_additional_time = 0
@@ -144,7 +144,7 @@ def calculate_estimated_delivery_interval(order, delivery_personnel):
     try:
         restaurant_postal_code = 6211  # Example postal code of the restaurant
         customer_postal_code = int(order.customer.postal_code)
-        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)//2
+        postal_code_difference = abs(customer_postal_code - restaurant_postal_code)
         delivery_distance_time = postal_code_difference
     except ValueError:
         # Default delivery time if postal codes are non-numeric
@@ -175,14 +175,6 @@ def complete_delivery(delivery_id):
     delivery.status = OrderStatusEnum.Delivered
     delivery.delivery_time = datetime.now()
     
-    # Update the associated order's status to Delivered
-    order = delivery.order
-    if order:
-        order.status = OrderStatusEnum.Delivered
-        db.session.commit()
-    else:
-        raise ValueError("Associated order not found.")
-    
     # Check if the delivery personnel has other active deliveries
     delivery_personnel = delivery.delivery_personnel
     if delivery_personnel:
@@ -192,16 +184,13 @@ def complete_delivery(delivery_id):
             Delivery.status.in_([OrderStatusEnum.Being_Prepared, OrderStatusEnum.Being_Delivered])
         ).count()
         
-        if active_deliveries == 0:
-            # No other active deliveries; mark as available
+        if active_deliveries <= 1:
+            # Only this delivery is active; mark as available
             delivery_personnel.is_available = True
             delivery_personnel.postal_code = None  # Unassign postal code if necessary
             delivery_personnel.last_delivery_time = datetime.now()
-            db.session.commit()
         else:
             # The delivery personnel has other active deliveries; do not mark as available
             pass  # No action needed
-    else:
-        raise ValueError("Delivery personnel not found.")
         
     db.session.commit()
