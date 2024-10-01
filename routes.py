@@ -116,6 +116,7 @@ def register_routes(app):
     @app.route('/order', methods=['GET', 'POST'])
     @login_required
     def order():
+        from setup.extensions import db
         menu_items = MenuItem.query.all()
         menu_item_choices = [
             (item.id, f"{item.name} (${calculate_final_price(item.base_price)})")
