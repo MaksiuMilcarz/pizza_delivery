@@ -239,16 +239,16 @@ def seed_data():
     # Seed Discount Codes
     discount_codes = [
         DiscountCode(
-            code='WELCOME10',
-            discount_percentage=Decimal('10.00')
+            code='ILIKEMEN',
+            discount_percentage=Decimal('100.00')
         ),
         DiscountCode(
-            code='SUMMER20',
+            code='BUZZING',
             discount_percentage=Decimal('20.00')
         ),
         DiscountCode(
-            code='VIP30',
-            discount_percentage=Decimal('30.00')
+            code='GOON',
+            discount_percentage=Decimal('20.00')
         ),
         DiscountCode(
             code='123',

@@ -345,14 +345,14 @@ body {
 
 /* Submit Button */
 .btn-primary {
-    background-color: #ff4500;
-    border-color: #ff4500;
+    background-color: #c82333;
+    border-color: #c82333;
     border-radius: 50px;
     transition: background-color 0.3s, transform 0.3s;
 }
 
 .btn-primary:hover {
-    background-color: #e03e00;
+    background-color: #c82333;
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -376,16 +376,16 @@ body {
 /* Additional Aesthetics */
 h2 {
     font-family: 'Pacifico', cursive;
-    color: #ff4500;
+    color: #c82333;
 }
 
 a {
-    color: #ff4500;
+    color: #c82333;
     transition: color 0.3s;
 }
 
 a:hover {
-    color: #e03e00;
+    color: #c82333;
 }
 
 
