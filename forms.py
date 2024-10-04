@@ -20,11 +20,28 @@ from wtforms.validators import (
     EqualTo,
     Length,
     ValidationError,
-    NumberRange
+    NumberRange,
+    Optional
 )
 from models import Customer, MenuItem, MenuItemCategoryEnum
 from datetime import date
 
+class EarningsReportFilterForm(FlaskForm):
+    # Disable CSRF protection for this form
+    class Meta:
+        csrf = False
+    
+    postal_code = StringField('Postal Code', validators=[Optional()])
+    gender = SelectField('Gender', choices=[
+        ('', 'All'),
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other')
+    ], validators=[Optional()])
+    min_age = IntegerField('Minimum Age', validators=[Optional(), NumberRange(min=0)])
+    max_age = IntegerField('Maximum Age', validators=[Optional(), NumberRange(min=0)])
+    submit = SubmitField('Apply Filters')
+    
 class RegistrationForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=50)])
     gender = SelectField(

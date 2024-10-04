@@ -215,7 +215,8 @@ def seed_data():
         email='max.milcarz@yahoo.com',
         password=generate_password_hash('passward'),
         total_pizzas_ordered=0,
-        birthday_pizza_claimed=False
+        birthday_pizza_claimed=False,
+        is_admin=True
     )
     db.session.add(customer)
     db.session.commit()
@@ -230,11 +231,28 @@ def seed_data():
         email='mateococo@gmail.com',
         password=generate_password_hash('passward'),
         total_pizzas_ordered=0,
-        birthday_pizza_claimed=False
+        birthday_pizza_claimed=False,
+        is_admin=False
     )
     db.session.add(customer)
     db.session.commit()
     print("Customer 2 seeded.")
+    customer = Customer(
+        name='Matea',
+        gender=GenderEnum.Female,
+        birthdate=datetime(2011, 7, 9),
+        phone='01234567777',
+        address='Nido A42',
+        postal_code='6231',
+        email='mateacoco@gmail.com',
+        password=generate_password_hash('passward'),
+        total_pizzas_ordered=0,
+        birthday_pizza_claimed=False,
+        is_admin=False
+    )
+    db.session.add(customer)
+    db.session.commit()
+    print("Customer 3 seeded.")
     
     # Seed Discount Codes
     discount_codes = [
