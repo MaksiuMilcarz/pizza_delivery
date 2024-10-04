@@ -7,7 +7,7 @@ from functionality.delivery import complete_delivery
 from functionality.order import create_order
 from functionality.order import cancel_order
 from functionality.utils import calculate_final_price
-from models import Customer, Delivery, DeliveryPersonnel, DiscountCode, DiscountCodeUsage, MenuItem, Order, OrderItem, OrderStatusEnum
+from models import Customer, Delivery, DeliveryPersonnel, DiscountCode, DiscountCodeUsage, MenuItem, MenuItemCategoryEnum, Order, OrderItem, OrderStatusEnum
 from forms import EarningsReportFilterForm, RegistrationForm, LoginForm, OrderForm, OrderItemForm
 from datetime import datetime
 from flask import jsonify
@@ -189,6 +189,7 @@ def register_routes(app):
     @app.route('/order', methods=['GET', 'POST'])
     @login_required
     def order():
+        from setup.extensions import db
         discount_percentage = Decimal(session.get('discount_percentage', 0.00))
         discount_code_str = session.get('discount_code', None)
         discount_code = None  # Initialize discount_code variable
