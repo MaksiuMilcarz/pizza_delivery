@@ -3,6 +3,7 @@ DROP DATABASE PizzaOrderingSystem;
 CREATE DATABASE PizzaOrderingSystem;
 USE PizzaOrderingSystem;
 
+-- sligtly old version, but the changes has been minimmal, it was used as initial version, we later switched to sqlite
 
 CREATE TABLE MenuItem (
     id INT PRIMARY KEY AUTO_INCREMENT,

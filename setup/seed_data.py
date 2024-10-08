@@ -107,7 +107,7 @@ def seed_data():
         password=generate_password_hash('passward'),
         total_pizzas_ordered=0,
         birthday_pizza_claimed=False,
-        is_admin=False
+        is_admin=True
     )
     db.session.add(customer)
     db.session.commit()
