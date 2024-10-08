@@ -1,131 +1,204 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Pizza Planet</title>
-    <!-- Link to Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Link to your CSS file using a relative path -->
-    <link rel="stylesheet" href="C:\Users\matec\OneDrive\Documents\pizza_delivery\static\css\style.css">
-    <!-- Meta tag for responsiveness -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="logo">
-            <!-- Use a relative path for the logo image -->
-            <img src="C:\Users\matec\OneDrive\Documents\pizza_delivery\static\images\pp-removebg-preview.png" alt="Pizza Planet Logo">
-            <h1>Pizza Planet</h1>
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Pizza Planet{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center d-flex align-items-center justify-content-center" id="home">
+    <div class="container hero-content">
+        <h1 class="hero-title">Welcome to Pizza Planet</h1>
+        <p class="hero-subtitle">Your favorite intergalactic pizza destination</p>
+        <a href="{{ url_for('menu') }}" class="btn btn-warning btn-lg explore-btn">Explore Our Menu!</a>
+    </div>
+</section>
+
+<!-- Promotions Section -->
+<section class="promotions-section py-5 bg-light text-center" id="promotions">
+    <div class="container">
+        <h2 class="text-center mb-4">Special Promotions</h2>
+        <!-- Container for the randomly chosen promotion image -->
+        <div id="promotion-image" class="promotion-img-container">
+            <!-- The image will be injected here by JavaScript -->
         </div>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#menu">Menu</a></li>
-                <li><a href="#promotions">Promotions</a></li>
-                <li><a href="#order">Order</a></li>
-                <li><a href="#contact">Contact Us</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
-            </ul>
-        </nav>
-    </header>
+    </div>
+</section>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <!-- You can replace with a background image by updating the CSS -->
-        <h2>Welcome to Pizza Planet!</h2>
-        <p>Your favorite intergalactic pizza destination.</p>
-        <button class="order-button">Order Now</button>
-    </section>
+<!-- Menu Section -->
+<section class="menu-section py-5" id="menu">
+    <div class="container">
+        <h2 class="text-center mb-4">Our Menu</h2>
+        <div id="menuCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="600">
+            <div class="carousel-inner">
+                <!-- Menu Item 1 -->
+                <div class="carousel-item active">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 text-center">
+                                <img src="{{ url_for('static', filename='images/margherita.jpeg') }}" class="card-img-top" alt="Galactic Margherita">
+                                <div class="card-body">
+                                    <h5 class="card-title">Galactic Margherita</h5>
+                                    <p class="card-text">Fresh tomatoes, mozzarella, and basil.</p>
+                                    <span class="badge bg-primary">$12.99</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Promotions Section -->
-    <section class="promotions" id="promotions">
-        <h2>Special Promotions</h2>
-        <div class="promotion-items">
-            <div class="promotion-item">
-                <h3>Galactic Deal</h3>
-                <p>Buy one Galactic Margherita, get one free!</p>
-                <span>Limited Time Offer</span>
+                <!-- Menu Item 2 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 text-center">
+                                <img src="{{ url_for('static', filename='images/pepperoni.jpeg') }}" class="card-img-top" alt="Cosmic Pepperoni">
+                                <div class="card-body">
+                                    <h5 class="card-title">Cosmic Pepperoni</h5>
+                                    <p class="card-text">Loaded with pepperoni and extra cheese.</p>
+                                    <span class="badge bg-primary">$14.99</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu Item 3 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 text-center">
+                                <img src="{{ url_for('static', filename='images/vegan_delight.jpeg') }}" class="card-img-top" alt="Interstellar Veggie">
+                                <div class="card-body">
+                                    <h5 class="card-title">Interstellar Veggie</h5>
+                                    <p class="card-text">Mixed vegetables with a delicious tomato base.</p>
+                                    <span class="badge bg-primary">$13.99</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu Item 4 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 text-center">
+                                <img src="{{ url_for('static', filename='images/supreme.jpeg') }}" class="card-img-top" alt="Supernova Supreme">
+                                <div class="card-body">
+                                    <h5 class="card-title">Supernova Supreme</h5>
+                                    <p class="card-text">Pepperoni, sausage, bell peppers, and onions.</p>
+                                    <span class="badge bg-primary">$15.99</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="promotion-item">
-                <h3>Star Combo</h3>
-                <p>Combo of any large pizza, garlic bread, and a drink.</p>
-                <span>$29.99</span>
-            </div>
-            <!-- Add more promotions as needed -->
+
+            <!-- Carousel controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#menuCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Menu Section -->
-    <section class="menu-section" id="menu">
-        <h2>Our Menu</h2>
-        <div class="menu-items">
-            <!-- Sample Menu Item -->
-            <div class="menu-item">
-                <h3>Galactic Margherita</h3>
-                <p>Fresh tomatoes, mozzarella, and basil.</p>
-                <span>$12.99</span>
+
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 bg-light" id="testimonials">
+    <div class="container">
+        <h2 class="text-center mb-4">What Our Customers Say</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card p-4 h-100">
+                    <div class="stars mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="mb-3">"Best pizzas of the galaxy on my mamma, shit's real"</p>
+                    <h5>- Buzz L.</h5>
+                </div>
             </div>
-            <!-- Add more menu items here -->
-            <div class="menu-item">
-                <h3>Cosmic Pepperoni</h3>
-                <p>Loaded with pepperoni and extra cheese.</p>
-                <span>$14.99</span>
+            <div class="col-md-4">
+                <div class="testimonial-card p-4 h-100">
+                    <div class="stars mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="mb-3">"Fast delivery and amazing taste. Made me feel like a human fr"</p>
+                    <h5>- Woody</h5>
+                </div>
             </div>
-            <div class="menu-item">
-                <h3>Interstellar Veggie</h3>
-                <p>Mixed vegetables with a delicious tomato base.</p>
-                <span>$13.99</span>
+            <div class="col-md-4">
+                <div class="testimonial-card p-4 h-100">
+                    <div class="stars mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="mb-3">"Loved the variety on the menu. Beside the potato fries... please remove that!"</p>
+                    <h5>- Mr. Potato Head</h5>
+                </div>
             </div>
-            <div class="menu-item">
-                <h3>Supernova Supreme</h3>
-                <p>Pepperoni, sausage, bell peppers, and onions.</p>
-                <span>$15.99</span>
+            <!-- Add more testimonials as needed -->
+        </div>
+    </div>
+</section>
+
+
+<!-- Contact Us Section -->
+<section class="contact-section py-5" id="contact">
+    <div class="container">
+        <h2 class="text-center mb-4">Contact Us</h2>
+        <p class="text-center mb-4">Have questions or need assistance? Reach out to us!</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials" id="testimonials">
-        <h2>What Our Customers Say</h2>
-        <div class="testimonial-items">
-            <div class="testimonial-item">
-                <p>"The Galactic Margherita is out of this world! Best pizza I've ever had."</p>
-                <span>- Alex P.</span>
-            </div>
-            <div class="testimonial-item">
-                <p>"Fast delivery and amazing taste. Pizza Planet never disappoints."</p>
-                <span>- Jamie L.</span>
-            </div>
-            <div class="testimonial-item">
-                <p>"Loved the variety on the menu. The Supernova Supreme is a must-try!"</p>
-                <span>- Sam K.</span>
-            </div>
-        </div>
-    </section>
+<!-- Footer Section -->
+<footer class="py-4 bg-dark text-white text-center">
+    <div class="container">
+        <p class="mb-0">&copy; 2023 Pizza Planet. All rights reserved.</p>
+    </div>
+</footer>
 
-    <!-- Order Section -->
-    <section class="order-section" id="order">
-        <h2>Place Your Order</h2>
-        <p>Choose from our extensive menu and enjoy delicious pizza delivered to your doorstep.</p>
-        <a href="#" class="order-button">Order Now</a>
-    </section>
+<!-- Include the JavaScript at the end of the body -->
+<script>
+// JavaScript to randomly display one of the two promotion images
+document.addEventListener("DOMContentLoaded", function () {
+    // Array of promo image filenames
+    const promoImages = ["promo1.png", "promo2.png"];
+    
+    // Randomly select one image (50/50 chance)
+    const selectedImage = promoImages[Math.floor(Math.random() * promoImages.length)];
+    
+    // Get the container where the image should be displayed
+    const promoContainer = document.getElementById("promotion-image");
+    
+    // Create an img element
+    const imgElement = document.createElement("img");
+    imgElement.src = `/static/images/${selectedImage}`; // Construct the path manually
+    imgElement.alt = "Special Promotion";
+    imgElement.classList.add("img-fluid"); // Ensure responsiveness
+    
+    // Append the image to the container
+    promoContainer.appendChild(imgElement);
+});
 
-    <!-- Contact Us Section -->
-    <section class="contact-section" id="contact">
-        <h2>Contact Us</h2>
-        <p>Have questions or need assistance? Reach out to us!</p>
-        <form action="#" method="post">
-            <input type="text" name="name" placeholder="Your Name" required>
-            <input type="email" name="email" placeholder="Your Email" required>
-            <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-            <button type="submit" class="order-button">Send Message</button>
-        </form>
-    </section>
 
-    <!-- Footer Section -->
-    <footer>
-        <p>&copy; 2023 Pizza Planet. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+
+</script>
+{% endblock %}
