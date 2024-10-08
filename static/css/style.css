@@ -1,28 +1,37 @@
+/* Import Google Fonts if not already included via HTML
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;500;700&display=swap');
+*/
+
 /* General Styles */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa; /* Initial background color */
+}
+
+/* Overriding body background with gradient */
+body.hero-body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 /* Hero Section Text Styling */
 .hero-title {
-    font-family: 'Pacifico', cursive; /* Ensure a fun yet professional look */
-    font-size: 4rem; /* Adjust size as needed */
-    color: #ffd700; /* A gold-yellow color for a 'galactic' feel */
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Adds depth to the text */
+    font-family: 'Pacifico', cursive;
+    font-size: 4rem;
+    color: #ffd700;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
     margin-bottom: 20px;
 }
 
 .hero-subtitle {
     font-size: 1.5rem; 
     font-family: 'Pacifico', cursive;
-    color: #111111; /* Classic white for contrast */
+    color: #111111;
     margin-bottom: 30px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Slight shadow for readability */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .explore-btn {
-    background-color: #ff4500; /* Bright orange-red button */
+    background-color: #ff4500;
     color: #fff;
     font-size: 1.2rem;
     padding: 10px 30px;
@@ -31,7 +40,7 @@ body {
 }
 
 .explore-btn:hover {
-    background-color: #e63600; /* Darker shade on hover */
+    background-color: #e63600;
     transform: scale(1.35);
 }
 
@@ -44,28 +53,28 @@ body {
     margin: 0 auto;
 }
 
-/* Promotion Image Container Styling */
-.promotions-section{
+/* Promotions Section */
+.promotions-section {
     padding-top: 37% !important;
 }
+
 .promotion-img-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px auto; /* Adjusts spacing around the image */
+    margin: 20px auto;
 }
 
 .promotion-img-container img {
-    max-width: 65%;  /* Ensure the image is responsive */
+    max-width: 65%;
     height: auto;
-    border-radius: 10px; /* Optional: adds some rounding to the image corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow effect */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
 
 /* Menu Section */
 .menu-section .card-img-top {
-    height: 200px;
+    height: 250px; /* Adjusted to latest value */
     object-fit: cover;
     border-bottom: 1px solid #dee2e6;
 }
@@ -120,7 +129,7 @@ body {
 }
 
 .contact-section form button {
-    background-color: #c82333; /* Changed to red */
+    background-color: #c82333;
     color: white;
     border: none;
     border-radius: 50px;
@@ -128,7 +137,7 @@ body {
 }
 
 .contact-section form button:hover {
-    background-color: #a71d2a; /* Darker red on hover */
+    background-color: #a71d2a;
     transform: scale(1.05);
 }
 
@@ -161,10 +170,25 @@ footer p {
     }
 }
 
-/* Ensure images are uniformly cropped */
+@media (max-width: 576px) {
+    .navbar-brand img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-control, .form-select {
+        padding: 15px;
+    }
+}
+
+/* Image Container */
 .image-container {
     width: 100%;
-    height: 200px; /* Adjust the height as needed */
+    height: 200px;
     overflow: hidden;
 }
 
@@ -181,7 +205,7 @@ footer p {
     right: 30px;
     width: 300px;
     z-index: 1000;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .floating-cart .card {
@@ -189,7 +213,7 @@ footer p {
 }
 
 .floating-cart .card-header {
-    background-color: #c82333; /* Changed to red */
+    background-color: #c82333;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -197,9 +221,10 @@ footer p {
 }
 
 .floating-cart .remove-item {
-    color: #ff4d4d; /* Lighter red for better visibility */
+    color: #ff4d4d;
 }
 
+/* Info Icon */
 .info-icon {
     cursor: pointer;
 }
@@ -241,21 +266,7 @@ footer p {
     border-left: none;
 }
 
-/* Navbar Brand Image Styling */
-.navbar-brand img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* Optional: Adjust spacing on smaller screens */
-@media (max-width: 576px) {
-    .navbar-brand img {
-        width: 30px;
-        height: 30px;
-    }
-}
-
-/* Red Accent for Icons in Login/Register */
+/* Login/Register Icon Styling */
 .login-icon,
 .register-icon {
     color: #c82333; /* Red color */
@@ -268,7 +279,7 @@ footer p {
     color: #a71d2a; /* Darker red on hover */
 }
 
-/* Red Buttons */
+/* Buttons Styling */
 .btn-primary {
     background-color: #c82333;
     border-color: #c82333;
@@ -293,29 +304,12 @@ footer p {
     transform: scale(1.05);
 }
 
-/* Adjust card images */
-.menu-section .card-img-top {
-    height: 250px;
-    object-fit: cover;
-    border-bottom: 1px solid #dee2e6;
-}
-
+/* Carousel Inner Padding */
 .carousel-inner {
     padding: 20px;
 }
 
-
-/* Custom Styles for Register Page */
-
-/* Body Background */
-body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-/* Card Styling */
-.card {
-    border-radius: 15px;
-}
+/* Register Page Specific Styles */
 
 /* Form Labels */
 .form-floating > label {
@@ -343,34 +337,9 @@ body {
     transform: scale(0.85) translateY(-1.5rem) translateX(0.15rem);
 }
 
-/* Submit Button */
-.btn-primary {
-    background-color: #c82333;
-    border-color: #c82333;
-    border-radius: 50px;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
 /* Error Messages */
 .text-danger {
     font-size: 0.9rem;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 576px) {
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    .form-control, .form-select {
-        padding: 15px;
-    }
 }
 
 /* Additional Aesthetics */
@@ -385,7 +354,5 @@ a {
 }
 
 a:hover {
-    color: #c82333;
+    color: #a71d2a;
 }
-
-
