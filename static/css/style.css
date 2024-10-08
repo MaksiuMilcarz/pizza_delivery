@@ -1,433 +1,391 @@
-/* Importing Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap');
-
 /* General Styles */
 body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif; /* Updated to Roboto */
-    background-color: #f0f8ff; /* Light blue background */
-    color: #004d40; /* Dark green text */
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+/* Hero Section Text Styling */
+.hero-title {
+    font-family: 'Pacifico', cursive; /* Ensure a fun yet professional look */
+    font-size: 4rem; /* Adjust size as needed */
+    color: #ffd700; /* A gold-yellow color for a 'galactic' feel */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Adds depth to the text */
+    margin-bottom: 20px;
 }
 
-h1, h2, h3 {
-    margin: 0;
+.hero-subtitle {
+    font-size: 1.5rem; 
+    font-family: 'Pacifico', cursive;
+    color: #111111; /* Classic white for contrast */
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Slight shadow for readability */
 }
 
-/* Header Styles */
-header {
-    background-color: #004d40;
-    color: white;
-    padding: 20px;
-    display: flex;
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.explore-btn {
+    background-color: #ff4500; /* Bright orange-red button */
+    color: #fff;
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    border-radius: 30px;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-header .logo {
-    display: flex;
-    align-items: center;
-    font-family: 'Pacifico', cursive; /* Playful font */
+.explore-btn:hover {
+    background-color: #e63600; /* Darker shade on hover */
+    transform: scale(1.35);
 }
 
-header .logo img {
-    height: 60px;
-    margin-right: 15px;
-}
-
-header nav {
-    margin-top: 10px;
-}
-
-header nav ul {
-    list-style: none;
-    display: flex;
-    padding: 0;
-    justify-content: center; /* Center navigation links */
-}
-
-header nav ul li {
-    margin: 0 10px; /* Adjusted for even spacing */
-}
-
-header nav ul li a {
-    color: white;
-    font-weight: bold;
-    padding: 5px 10px;
-    transition: background-color 0.3s, border-radius 0.3s;
-}
-
-header nav ul li a:hover {
-    background-color: #00796b;
-    border-radius: 5px;
-}
-
-/* Hero Section Styles */
-.hero {
-    background-color: #1e88e5; /* Blue background */
-    color: white;
-    text-align: center;
-    padding: 100px 20px;
+/* Adjust hero content positioning */
+.hero-content {
     position: relative;
-    animation: fadeIn 2s ease-in-out;
-    transition: background-color 0.3s;
-}
-
-.hero:hover {
-    background-color: #1565c0; /* Darker blue on hover */
-}
-
-.hero h2 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 48px;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 24px;
-    margin-bottom: 30px;
-}
-
-.order-button {
-    background-color: #ffeb3b;
-    color: #004d40;
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.order-button:hover {
-    background-color: #fdd835;
-    transform: scale(1.05);
-}
-
-/* Promotions Section Styles */
-.promotions {
-    padding: 50px 20px;
+    z-index: 1;
     text-align: center;
-    background-color: #ffffff; /* White background */
-}
-
-.promotions h2 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 36px;
-    margin-bottom: 40px;
-    color: #004d40;
-}
-
-.promotion-items {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
-
-.promotion-item {
-    background-color: #e8f5e9;
-    border: 1px solid #004d40;
-    border-radius: 10px;
-    width: 250px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    animation: popUp 0.5s ease-out;
-}
-
-.promotion-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.promotion-item h3 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #00796b;
-}
-
-.promotion-item p {
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-.promotion-item span {
-    font-size: 18px;
-    font-weight: bold;
-    color: #004d40;
-}
-
-/* Menu Section Styles */
-.menu-section {
-    padding: 50px 20px;
-    text-align: center;
-    background-color: #ffffff; /* White background */
-}
-
-.menu-section h2 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 36px;
-    margin-bottom: 40px;
-}
-
-.menu-items {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
-
-.menu-item {
-    background-color: #e0f7fa;
-    border: 1px solid #004d40;
-    border-radius: 10px;
-    width: 250px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    animation: popUp 0.5s ease-out;
-}
-
-.menu-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.menu-item h3 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #00796b;
-}
-
-.menu-item p {
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-.menu-item span {
-    font-size: 20px;
-    font-weight: bold;
-    color: #004d40;
-}
-
-/* Testimonials Section Styles */
-.testimonials {
-    padding: 50px 20px;
-    text-align: center;
-    background-color: #f1f8e9; /* Light green background */
-}
-
-.testimonials h2 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 36px;
-    margin-bottom: 40px;
-    color: #004d40;
-}
-
-.testimonial-items {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
-
-.testimonial-item {
-    background-color: #ffffff;
-    border: 1px solid #004d40;
-    border-radius: 10px;
-    width: 300px;
-    padding: 20px;
-    text-align: left;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    animation: popUp 0.5s ease-out;
-}
-
-.testimonial-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-.testimonial-item p {
-    font-size: 16px;
-    margin-bottom: 15px;
-    color: #333333;
-}
-
-.testimonial-item span {
-    font-size: 14px;
-    font-weight: bold;
-    color: #00796b;
-}
-
-/* Order Section Styles */
-.order-section {
-    padding: 50px 20px;
-    text-align: center;
-    background-color: #ffffff; /* White background */
-}
-
-.order-section h2 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #004d40;
-}
-
-.order-section p {
-    font-size: 18px;
-    margin-bottom: 30px;
-    color: #333333;
-}
-
-.order-section .order-button {
-    background-color: #ffeb3b;
-    color: #004d40;
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.order-section .order-button:hover {
-    background-color: #fdd835;
-    transform: scale(1.05);
-}
-
-/* Contact Us Section Styles */
-.contact-section {
-    padding: 50px 20px;
-    text-align: center;
-    background-color: #e3f2fd; /* Light blue background */
-}
-
-.contact-section h2 {
-    font-family: 'Pacifico', cursive; /* Playful font */
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #004d40;
-}
-
-.contact-section p {
-    font-size: 18px;
-    margin-bottom: 30px;
-    color: #333333;
-}
-
-.contact-section form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
+/* Promotion Image Container Styling */
+.promotions-section{
+    padding-top: 37% !important;
+}
+.promotion-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto; /* Adjusts spacing around the image */
+}
+
+.promotion-img-container img {
+    max-width: 65%;  /* Ensure the image is responsive */
+    height: auto;
+    border-radius: 10px; /* Optional: adds some rounding to the image corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow effect */
+}
+
+
+/* Menu Section */
+.menu-section .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.menu-section .card-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.25rem;
+}
+
+.menu-section .badge-primary {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+/* Testimonials Section */
+.testimonials-section .testimonial-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.testimonials-section .testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.testimonials-section .testimonial-card p {
+    font-style: italic;
+    color: #6c757d;
+}
+
+.testimonials-section .testimonial-card h5 {
+    margin-top: 15px;
+    color: #343a40;
+}
+
+/* Contact Section */
 .contact-section form input,
 .contact-section form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #004d40;
     border-radius: 5px;
-    font-size: 16px;
-    resize: none;
+    border: 1px solid #ced4da;
+    padding: 15px;
+    transition: border-color 0.3s;
+}
+
+.contact-section form input:focus,
+.contact-section form textarea:focus {
+    border-color: #80bdff;
+    outline: none;
 }
 
 .contact-section form button {
-    background-color: #ffeb3b;
-    color: #004d40;
-    padding: 10px 20px;
-    font-size: 18px;
+    background-color: #c82333; /* Changed to red */
+    color: white;
     border: none;
-    cursor: pointer;
-    border-radius: 5px;
+    border-radius: 50px;
     transition: background-color 0.3s, transform 0.3s;
 }
 
 .contact-section form button:hover {
-    background-color: #fdd835;
+    background-color: #a71d2a; /* Darker red on hover */
     transform: scale(1.05);
 }
 
-/* Footer Styles */
+/* Footer */
 footer {
-    background-color: #004d40;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    background-color: #343a40;
+    color: #fff;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+footer p {
+    margin: 0;
 }
 
-@keyframes popUp {
-    0% {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Responsive Design */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-    header {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .menu-section .card-img-top {
+        height: 150px;
+    }
+    
+    .promotions-section h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Ensure images are uniformly cropped */
+.image-container {
+    width: 100%;
+    height: 200px; /* Adjust the height as needed */
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Floating Cart Styles */
+.floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 300px;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+}
+
+.floating-cart .card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.floating-cart .card-header {
+    background-color: #c82333; /* Changed to red */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.floating-cart .remove-item {
+    color: #ff4d4d; /* Lighter red for better visibility */
+}
+
+.info-icon {
+    cursor: pointer;
+}
+
+/* Badge Styling */
+.badge-success {
+    background-color: #28a745 !important; /* Green */
+}
+
+.badge-primary {
+    background-color: #007bff !important; /* Blue */
+}
+
+.badge-info {
+    background-color: #17a2b8 !important; /* Teal */
+}
+
+/* Additional Custom Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.btn-outline-secondary {
+    border-color: #ced4da;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .btn {
+    border-left: none;
+}
+
+/* Navbar Brand Image Styling */
+.navbar-brand img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Optional: Adjust spacing on smaller screens */
+@media (max-width: 576px) {
+    .navbar-brand img {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Red Accent for Icons in Login/Register */
+.login-icon,
+.register-icon {
+    color: #c82333; /* Red color */
+    font-size: 2.5rem;
+    transition: color 0.3s;
+}
+
+.login-icon:hover,
+.register-icon:hover {
+    color: #a71d2a; /* Darker red on hover */
+}
+
+/* Red Buttons */
+.btn-primary {
+    background-color: #c82333;
+    border-color: #c82333;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #a71d2a;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-danger:hover {
+    background-color: #bd2130;
+    transform: scale(1.05);
+}
+
+/* Adjust card images */
+.menu-section .card-img-top {
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.carousel-inner {
+    padding: 20px;
+}
+
+
+/* Custom Styles for Register Page */
+
+/* Body Background */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Card Styling */
+.card {
+    border-radius: 15px;
+}
+
+/* Form Labels */
+.form-floating > label {
+    color: #6c757d;
+}
+
+/* Form Fields */
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 20px;
+    height: auto;
+}
+
+/* Placeholder Text */
+.form-control::placeholder, .form-select::placeholder {
+    color: transparent;
+}
+
+/* Form Labels Floating Effect */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-select:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select:not(:placeholder-shown) ~ label {
+    opacity: 0.65;
+    transform: scale(0.85) translateY(-1.5rem) translateX(0.15rem);
+}
+
+/* Submit Button */
+.btn-primary {
+    background-color: #c82333;
+    border-color: #c82333;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Error Messages */
+.text-danger {
+    font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-control, .form-select {
         padding: 15px;
     }
-
-    .hero {
-        padding: 60px 20px;
-    }
-
-    .menu-items,
-    .promotion-items,
-    .testimonial-items {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    header nav ul {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    header nav ul li {
-        margin: 0;
-    }
-
-    .menu-item,
-    .promotion-item,
-    .testimonial-item {
-        width: 80%; /* Adjust width for smaller screens */
-    }
-
-    .contact-section form {
-        width: 90%;
-    }
 }
+
+/* Additional Aesthetics */
+h2 {
+    font-family: 'Pacifico', cursive;
+    color: #c82333;
+}
+
+a {
+    color: #c82333;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #c82333;
+}
+
+
