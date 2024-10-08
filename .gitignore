@@ -7,4 +7,4 @@ __pycache__/
 *$py.class
 
 # Database File
-pizza_delivery.db
+/instance/pizza_delivery.db
