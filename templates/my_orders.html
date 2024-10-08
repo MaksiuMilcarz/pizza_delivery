@@ -24,6 +24,16 @@
                 <td>{{ order.status.value }}</td>
                 <td>{{ order.delivery_personnel_name if order.delivery_personnel_name else 'Unassigned' }}</td>
                 <td>{{ order.delivery_personnel_phone if order.delivery_personnel_phone else 'N/A' }}</td>
+                <td>
+                    <!-- "See Details" Button -->
+                    <a href="{{ url_for('order_status_page', order_id=order.order_id) }}" class="btn btn-primary btn-sm">
+                        See Details
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">You have no orders.</td>
             </tr>
             {% endfor %}
         </tbody>

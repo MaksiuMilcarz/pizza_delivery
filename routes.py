@@ -139,6 +139,11 @@ def register_routes(app):
         return render_template('register.html', form=form) 
 
 
+    @app.route('/', methods=['GET'])
+    def index():
+        return render_template('index.html')
+    
+
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -280,6 +285,11 @@ def register_routes(app):
     @login_required
     def order_status_page(order_id):
         order = Order.query.get_or_404(order_id)
+        
+        if order.customer_id != current_user.id:
+            flash('You do not have permission to view this order.', 'danger')
+            return redirect(url_for('my_orders'))
+        
         customer = order.customer
         now = datetime.now()
     

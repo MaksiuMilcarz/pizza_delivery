@@ -120,7 +120,7 @@ function updateOrderStatus() {
             }
             // If status is 'Cancelled', redirect to the order page
             if (response.status === 'Cancelled') {
-                window.location.href = "{{ url_for('order') }}";
+                window.location.href = "{{ url_for('index') }}";
             }
 
             $('#order-status').attr('class', badgeClass);
