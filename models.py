@@ -35,6 +35,8 @@ class MenuItem(db.Model):
     base_price = Column(DECIMAL(10, 2), nullable=False)
     is_vegan = Column(Boolean, default=False)
     is_vegetarian = Column(Boolean, default=False)
+    image = Column(String(255), nullable=True)
+    description = Column(Text, nullable=True)
 
     # Relationships
     ingredients = relationship(
