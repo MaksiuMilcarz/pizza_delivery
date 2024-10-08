@@ -27,19 +27,98 @@ def seed_data():
     db.session.commit()
     print("Ingredients seeded.")
 
-    # Seed Menu Items (Pizzas)
+    # Define menu items data
     pizzas = [
-        MenuItem(name='Margherita', category=MenuItemCategoryEnum.Pizza, base_price=5.00, is_vegetarian=True),
-        MenuItem(name='Pepperoni', category=MenuItemCategoryEnum.Pizza, base_price=6.50, is_vegetarian=False),
-        MenuItem(name='Vegan Delight', category=MenuItemCategoryEnum.Pizza, base_price=7.00, is_vegan=True, is_vegetarian=True),
-        MenuItem(name='Hawaiian', category=MenuItemCategoryEnum.Pizza, base_price=6.00, is_vegetarian=False),
-        MenuItem(name='Mushroom', category=MenuItemCategoryEnum.Pizza, base_price=5.50, is_vegetarian=True),
-        MenuItem(name='BBQ Chicken', category=MenuItemCategoryEnum.Pizza, base_price=7.50, is_vegetarian=False),
-        MenuItem(name='Spinach & Feta', category=MenuItemCategoryEnum.Pizza, base_price=6.00, is_vegetarian=True),
-        MenuItem(name='Four Cheese', category=MenuItemCategoryEnum.Pizza, base_price=6.50, is_vegetarian=True),
-        MenuItem(name='Supreme', category=MenuItemCategoryEnum.Pizza, base_price=8.00, is_vegetarian=False),
-        MenuItem(name='Mediterranean', category=MenuItemCategoryEnum.Pizza, base_price=7.00, is_vegetarian=True)
-    ]
+    MenuItem(
+        name="Margherita",
+        category=MenuItemCategoryEnum.Pizza,
+        image="margherita.jpeg",
+        base_price=5.00,
+        description="Classic delight with 100% real mozzarella cheese",
+        is_vegetarian=True,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Pepperoni",
+        category=MenuItemCategoryEnum.Pizza,
+        image="pepperoni.jpeg",
+        base_price=6.50,
+        description="Loaded with pepperoni and cheese",
+        is_vegetarian=False,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Vegan Delight",
+        category=MenuItemCategoryEnum.Pizza,
+        image="vegan_delight.jpeg",
+        base_price=7.00,
+        description="A healthy choice with fresh vegetables",
+        is_vegetarian=True,
+        is_vegan=True
+    ),
+    MenuItem(
+        name="Hawaiian",
+        category=MenuItemCategoryEnum.Pizza,
+        image="hawaiian.jpeg",
+        base_price=6.00,
+        description="Ham, pineapple, and mozzarella cheese",
+        is_vegetarian=False,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Mushroom",
+        category=MenuItemCategoryEnum.Pizza,
+        image="mushroom.jpeg",
+        base_price=5.50,
+        description="Loaded with mushrooms and mozzarella cheese",
+        is_vegetarian=True,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="BBQ Chicken",
+        category=MenuItemCategoryEnum.Pizza,
+        image="bbq_chicken.jpeg",
+        base_price=7.50,
+        description="BBQ sauce, chicken, and onions",
+        is_vegetarian=False,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Spinach & Feta",
+        category=MenuItemCategoryEnum.Pizza,
+        image="spinach_feta.jpeg",
+        base_price=6.00,
+        description="Spinach, feta cheese, and mozzarella",
+        is_vegetarian=True,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Four Cheese",
+        category=MenuItemCategoryEnum.Pizza,
+        image="four_cheese.jpeg",
+        base_price=6.50,
+        description="A blend of four cheeses",
+        is_vegetarian=True,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Supreme",
+        category=MenuItemCategoryEnum.Pizza,
+        image="supreme.jpeg",
+        base_price=8.00,
+        description="Pepperoni, mushrooms, bell peppers, and onions",
+        is_vegetarian=False,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Mediterranean",
+        category=MenuItemCategoryEnum.Pizza,
+        image="mediterranean.png",
+        base_price=7.00,
+        description="Olives, feta, and bell peppers",
+        is_vegetarian=True,
+        is_vegan=False
+    )]
     db.session.add_all(pizzas)
     db.session.commit()
     print("Pizzas seeded.")
@@ -61,20 +140,66 @@ def seed_data():
 
     # Seed Drinks
     drinks = [
-        MenuItem(name='Coca Cola', category=MenuItemCategoryEnum.Drink, base_price=1.50),
-        MenuItem(name='Sprite', category=MenuItemCategoryEnum.Drink, base_price=1.50),
-        MenuItem(name='Water', category=MenuItemCategoryEnum.Drink, base_price=1.00),
-        MenuItem(name='Orange Juice', category=MenuItemCategoryEnum.Drink, base_price=2.00)
-    ]
+    MenuItem(
+        name="Coca Cola",
+        category=MenuItemCategoryEnum.Drink,
+        image="coca_cola.jpeg",
+        base_price=1.50,
+        description="Refreshing Coca Cola",
+        is_vegetarian=True,
+        is_vegan=True
+    ),
+    MenuItem(
+        name="Sprite",
+        category=MenuItemCategoryEnum.Drink,
+        image="sprite.jpeg",
+        base_price=1.50,
+        description="Lemon-lime flavored soda",
+        is_vegetarian=True,
+        is_vegan=True
+    ),
+    MenuItem(
+        name="Water",
+        category=MenuItemCategoryEnum.Drink,
+        image="water.jpeg",
+        base_price=1.00,
+        description="Pure and clean bottled water",
+        is_vegetarian=True,
+        is_vegan=True
+    ),
+    MenuItem(
+        name="Orange Juice",
+        category=MenuItemCategoryEnum.Drink,
+        image="orange_juice.jpeg",
+        base_price=2.00,
+        description="Freshly squeezed orange juice",
+        is_vegetarian=True,
+        is_vegan=True
+    )]
     db.session.add_all(drinks)
     db.session.commit()
     print("Drinks seeded.")
 
     # Seed Desserts
     desserts = [
-        MenuItem(name='Tiramisu', category=MenuItemCategoryEnum.Dessert, base_price=3.50),
-        MenuItem(name='Gelato', category=MenuItemCategoryEnum.Dessert, base_price=2.50)
-    ]
+    MenuItem(
+        name="Tiramisu",
+        category=MenuItemCategoryEnum.Dessert,
+        image="tiramisu.jpeg",
+        base_price=3.50,
+        description="Classic Italian dessert with mascarpone",
+        is_vegetarian=True,
+        is_vegan=False
+    ),
+    MenuItem(
+        name="Gelato",
+        category=MenuItemCategoryEnum.Dessert,
+        image="gelato.jpeg",
+        base_price=2.50,
+        description="Creamy Italian ice cream",
+        is_vegetarian=True,
+        is_vegan=False
+    )]
     db.session.add_all(desserts)
     db.session.commit()
     print("Desserts seeded.")
@@ -107,7 +232,7 @@ def seed_data():
         password=generate_password_hash('passward'),
         total_pizzas_ordered=0,
         birthday_pizza_claimed=False,
-        is_admin=True
+        is_admin=False
     )
     db.session.add(customer)
     db.session.commit()
@@ -132,16 +257,16 @@ def seed_data():
     # Seed Discount Codes
     discount_codes = [
         DiscountCode(
-            code='WELCOME10',
-            discount_percentage=Decimal('10.00')
+            code='ILIKEMEN',
+            discount_percentage=Decimal('100.00')
         ),
         DiscountCode(
-            code='SUMMER20',
+            code='BUZZING',
             discount_percentage=Decimal('20.00')
         ),
         DiscountCode(
-            code='VIP30',
-            discount_percentage=Decimal('30.00')
+            code='GOON',
+            discount_percentage=Decimal('20.00')
         ),
         DiscountCode(
             code='123',
