@@ -105,7 +105,7 @@ def register_routes(app):
         # Access control: Only admins can access this page
         if not current_user.is_admin:
             flash('You do not have permission to access this page.', 'danger')
-            return redirect(url_for('order'))  # Redirect to order page or any other appropriate page
+            return redirect(url_for('index'))  # Redirect to order page or any other appropriate page
 
         # Fetch all orders, joined with customer and delivery personnel
         orders = db.session.query(
@@ -149,7 +149,7 @@ def register_routes(app):
             if customer and check_password_hash(customer.password, form.password.data):
                 login_user(customer)
                 flash('Logged in successfully!', 'success')
-                return redirect(url_for('order'))
+                return redirect(url_for('index'))
             else:
                 flash('Invalid email or password.', 'danger')
         return render_template('login.html', form=form)
